@@ -92,12 +92,11 @@ class CameraThread(QThread):
                 print("test")
                 gp.check_result(gp.gp_camera_trigger_capture(camera))
                 self.trigger = False
+        
         gp.gp_camera_get_about(camera)
         
         time.sleep(1)
-        #gp.check_result(gp.gp_camera_trigger_capture(camera))
         print("deleting camera")
-        #gp.check_result(gp.gp_camera_exit(camera))
 
         #def convert_gp_img_to_img(self, )
 
