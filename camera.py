@@ -1,5 +1,7 @@
 import gphoto2 as gp
 import time
+import io
+import numpy as np 
 
 class Camera():
 
@@ -25,3 +27,13 @@ class Camera():
                 break
             
             is_first_loop_done = True
+
+    def capture_next_preview_as_np_arry(self):
+        try:
+            preview_file = self.camera.capture_preview()
+            preview_path =  gp.gp_file_get_data_and_size(preview_file)
+        except gp.GP_ERROR as ex:
+            print(ex)
+        
+        ds = io.BytesIO(preview_path)
+        return np.asarray(bytearray(ds.read()), dtype=np.uint8)
