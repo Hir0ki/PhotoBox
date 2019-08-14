@@ -9,10 +9,13 @@ import cv2
 import numpy as np
 import gphoto2 as gp
 import PhotoBooth as pb
+from config import Config
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide2.QtGui import QImage, QPixmap
 from PySide2.QtCore import QThread, Qt, QObject, Signal, Slot
+
+config = Config()
 
 class PhotoBooth(QMainWindow, pb.Ui_MainWindow):
     def __init__(self):
@@ -22,14 +25,12 @@ class PhotoBooth(QMainWindow, pb.Ui_MainWindow):
         self.cameraThread.newImage.connect(self.newImageDetected)
         self.triggerThread = TriggerThread()
         self.triggerThread.trigger.connect(self.takePicture) 
-        self.pushButton.clicked.connect(self.takePicture2)
+        self.pushButton.clicked.connect(self.takePicture)
         self.pixmap = None
         self.cameraThread.start()
         self.triggerThread.start()
 
     
-    
-
 
     def resizeEvent(self, event):
         if not self.pixmap is None:
@@ -40,11 +41,7 @@ class PhotoBooth(QMainWindow, pb.Ui_MainWindow):
     def takePicture(self, test):
         self.cameraThread.trigger = True
         print("set property")
-    
-    def takePicture2(self):
-        self.cameraThread.trigger = True
-        print("set property")
-        
+
 
 
     def closeEvent(self, event):
@@ -75,13 +72,13 @@ class CameraThread(QThread):
         
         
         while self.run_thread:
+            # capturing preview and sending it to ui
             img = self.camera.capture_next_preview_as_np_array()
-
             self.newImage.emit(self._convert_picture_to_qimage(img))
+
             if self.trigger == True:
-                print("test")
                 cap_img =  self.camera.capture_image()
-                print(cap_img)
+                self.camera.save_image(config.get_output_path(), cap_img)
                 self.trigger = False
         
         time.sleep(1)

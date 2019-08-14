@@ -43,9 +43,21 @@ class Camera():
 
     def capture_image(self):
         try:
-            self.camera.trigger_capture()
+            return self.camera.capture(gp.GP_CAPTURE_IMAGE)
+            
         except Exception as ex:
             log.log_msg_with_error("error while takeing a picture", ex)
+
+    def save_image(self, target_path, camera_file_path):
+        try:
+            camera_file = self.camera.file_get( camera_file_path.folder, camera_file_path.name, gp.GP_FILE_TYPE_NORMAL)
+            print(target_path)
+            camera_file.save(f'{target_path}/{camera_file_path.name} ')
+        except Exception as ex:
+            log.log_msg_with_error("error while saving a file", ex)
+
+
+
 
     def disconnect_camera(self):
         self.camera.exit()
