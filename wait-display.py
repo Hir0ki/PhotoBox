@@ -73,7 +73,6 @@ class CameraThread(QThread):
         camera = gp.check_result(gp.gp_camera_new())
         gp.check_result(gp.gp_camera_init(camera))
         
-        count = 0
         
         while self.run_thread:
             camera_file = gp.check_result(gp.gp_camera_capture_preview(camera))

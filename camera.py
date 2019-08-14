@@ -28,7 +28,7 @@ class Camera():
             
             is_first_loop_done = True
 
-    def capture_next_preview_as_np_arry(self):
+    def capture_next_preview_as_np_array(self):
         try:
             preview_file = self.camera.capture_preview()
             preview_path =  gp.gp_file_get_data_and_size(preview_file)
