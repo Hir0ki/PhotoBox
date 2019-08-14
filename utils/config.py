@@ -1,6 +1,5 @@
-import json
-import log
-from os import path 
+import json 
+from devices import log
 
 
 class Config():

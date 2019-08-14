@@ -3,13 +3,13 @@
 import sys
 import io
 
-from camera import Camera
+from devices.camera import Camera
 import time
 import cv2
 import numpy as np
 import gphoto2 as gp
 import PhotoBooth as pb
-from config import Config
+from utils.config import Config
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide2.QtGui import QImage, QPixmap
