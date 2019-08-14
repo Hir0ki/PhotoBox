@@ -32,7 +32,7 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         if config.get_debug() == "False":
             self.pushButton.hide()
 
-    
+        self.showFullScreen()    
 
     def resizeEvent(self, event):
         if not self.pixmap is None:
@@ -53,7 +53,7 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
 
     def newImageDetected(self, img):
         self.pixmap = QPixmap(img)
-        self.label.setPixmap(self.pixmap.scaled(self.label.width(), self.label.height(), Qt.KeepAspectRatio))
+        self.label.setPixmap(self.pixmap.scaled(self.label.width(), self.label.height()))
 
 class CameraThread(QThread):
     newImage = Signal(QImage)

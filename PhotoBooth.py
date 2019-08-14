@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'PhotoBooth.ui',
 # licensing of 'PhotoBooth.ui' applies.
 #
-# Created: Thu Aug 15 00:04:36 2019
+# Created: Thu Aug 15 00:16:33 2019
 #      by: pyside2-uic  running on PySide2 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,6 +14,9 @@ class Ui_PhotoBooth(object):
     def setupUi(self, PhotoBooth):
         PhotoBooth.setObjectName("PhotoBooth")
         PhotoBooth.resize(663, 421)
+        PhotoBooth.setAutoFillBackground(False)
+        PhotoBooth.setStyleSheet("background-color: #444242\n"
+"")
         self.centralwidget = QtWidgets.QWidget(PhotoBooth)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
