@@ -53,7 +53,6 @@ class PhotoBooth(QMainWindow, pb.Ui_MainWindow):
 
 
     def newImageDetected(self, img):
-        print("New image!")
         self.pixmap = QPixmap(img)
         self.label.setPixmap(self.pixmap.scaled(self.label.width(), self.label.height(), Qt.KeepAspectRatio))
 
@@ -69,6 +68,7 @@ class CameraThread(QThread):
     def __del__(self):
         print("closing thread") 
         self.run_thread = False
+        self.camera.disconnect_camera()
         self.wait()
 
     def run(self): 
@@ -80,7 +80,8 @@ class CameraThread(QThread):
             self.newImage.emit(self._convert_picture_to_qimage(img))
             if self.trigger == True:
                 print("test")
-                self.camera.capture_image()
+                cap_img =  self.camera.capture_image()
+                print(cap_img)
                 self.trigger = False
         
         time.sleep(1)

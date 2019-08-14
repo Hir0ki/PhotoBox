@@ -43,7 +43,10 @@ class Camera():
 
     def capture_image(self):
         try:
-            self.camera.trigger_capture(self.context)
+            self.camera.trigger_capture()
         except Exception as ex:
             log.log_msg_with_error("error while takeing a picture", ex)
 
+    def disconnect_camera(self):
+        self.camera.exit()
+        log.log_msg("exits camera")
