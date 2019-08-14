@@ -10,6 +10,7 @@ import numpy as np
 import gphoto2 as gp
 import PhotoBooth as pb
 from utils.config import Config
+from trigger import TriggerThread
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide2.QtGui import QImage, QPixmap
@@ -96,21 +97,6 @@ class CameraThread(QThread):
         res = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         return QImage(res, width, height, width*channels, QImage.Format_RGB888)
 
-class TriggerThread(QThread):
-    trigger = Signal(bool)
-    def __init__(self):
-        QThread.__init__(self)
-        print("Starting tread")
-        self.run_thread = True
-
-    def __del__(self):
-        print("closing thread") 
-        self.run_thread = False
-        self.wait()
-
-    def run(self): 
-        self.sleep(5)
-        self.trigger.emit(True)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

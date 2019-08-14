@@ -3,3 +3,4 @@ gphoto2
 numpy
 opencv-python
 pyserial
+RPi.GPIO
