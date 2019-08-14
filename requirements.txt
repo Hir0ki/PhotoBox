@@ -1,0 +1,4 @@
+pyside2
+gphoto2
+numpy
+opencv-python
