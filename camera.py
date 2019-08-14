@@ -33,13 +33,10 @@ class Camera():
         try:
             preview_file = self.camera.capture_preview()
             preview_path =  gp.check_result(gp.gp_file_get_data_and_size(preview_file))
+            return self._convert_camera_to_np_array(preview_path)
         except Exception as error_gp:
             log.log_msg_with_error("Error while capturing the preview", error_gp)
-        try:
-            ds = io.BytesIO(preview_path)
-            return np.asarray(bytearray(ds.read()), dtype=np.uint8)
-        except Exception as error_io:
-            log.log_msg_with_error("error while reading preview from camera", error_io)
+        
 
     def capture_image(self):
         try:
@@ -51,12 +48,18 @@ class Camera():
     def save_image(self, target_path, camera_file_path):
         try:
             camera_file = self.camera.file_get( camera_file_path.folder, camera_file_path.name, gp.GP_FILE_TYPE_NORMAL)
-            print(target_path)
-            camera_file.save(f'{target_path}/{camera_file_path.name} ')
+            target = f'{target_path}/{camera_file_path.name}'
+            camera_file.save(target)
+            return target            
         except Exception as ex:
             log.log_msg_with_error("error while saving a file", ex)
 
-
+    def _convert_camera_to_np_array(self, camera_file ):
+        try:
+            ds = io.BytesIO(camera_file)
+            return np.asarray(bytearray(ds.read()), dtype=np.uint8)
+        except Exception as error_io:
+            log.log_msg_with_error("error while reading picture from camera", error_io)
 
 
     def disconnect_camera(self):

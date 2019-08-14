@@ -1,3 +1,5 @@
 {
-    "output_path": "/home/david/Bilder"
+    "output_path": "/home/david/Bilder",
+    "debug": "True",
+    "image_show_time_in_s" : 5
 }

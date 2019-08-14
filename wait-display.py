@@ -17,7 +17,7 @@ from PySide2.QtCore import QThread, Qt, QObject, Signal, Slot
 
 config = Config()
 
-class PhotoBooth(QMainWindow, pb.Ui_MainWindow):
+class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)
@@ -29,6 +29,8 @@ class PhotoBooth(QMainWindow, pb.Ui_MainWindow):
         self.pixmap = None
         self.cameraThread.start()
         self.triggerThread.start()
+        if config.get_debug() == "False":
+            self.pushButton.hide()
 
     
 
@@ -78,14 +80,18 @@ class CameraThread(QThread):
 
             if self.trigger == True:
                 cap_img =  self.camera.capture_image()
-                self.camera.save_image(config.get_output_path(), cap_img)
+                saved_picture = self.camera.save_image(config.get_output_path(), cap_img)
+                pixmap = QPixmap(saved_picture)
+                
+                self.newImage.emit(pixmap.toImage())
+                self.sleep(config.get_image_show_time_in_s())
                 self.trigger = False
         
         time.sleep(1)
         print("deleting camera")
 
     def _convert_picture_to_qimage(self, img):
-        img = cv2.imdecode(img, cv2.IMREAD_COLOR)   
+        img = cv2.imdecode(img, cv2.IMREAD_COLOR)
         height, width, channels = img.shape
         res = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         return QImage(res, width, height, width*channels, QImage.Format_RGB888)
