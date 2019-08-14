@@ -2,6 +2,7 @@ import gphoto2 as gp
 import time
 import io
 import numpy as np 
+import log
 
 class Camera():
 
@@ -32,8 +33,16 @@ class Camera():
         try:
             preview_file = self.camera.capture_preview()
             preview_path =  gp.gp_file_get_data_and_size(preview_file)
+        except gp.GP_ERROR as error_gp:
+            log.log_msg_with_error("Error while capturing the preview", error_gp)
+        try:
+            ds = io.BytesIO(preview_path)
+            return np.asarray(bytearray(ds.read()), dtype=np.uint8)
+        except Exception as error_io:
+            log.log_msg_with_error("error while reading preview from camera", error_io)
+
+    def capture_image(self):
+        try:
+            self.camera.trigger_capture(self.context)
         except gp.GP_ERROR as ex:
-            print(ex)
-        
-        ds = io.BytesIO(preview_path)
-        return np.asarray(bytearray(ds.read()), dtype=np.uint8)
+            log.log_msg_with_error("error while takeing a picture", ex)
