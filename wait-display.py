@@ -3,6 +3,7 @@
 import sys
 import io
 
+from camera import Camera
 import time
 import cv2
 import numpy as np
@@ -63,6 +64,7 @@ class CameraThread(QThread):
         print("Starting tread")
         self.run_thread = True
         self.trigger = False
+        self.camera = Camera()
 
     def __del__(self):
         print("closing thread") 
@@ -70,34 +72,25 @@ class CameraThread(QThread):
         self.wait()
 
     def run(self): 
-        camera = gp.check_result(gp.gp_camera_new())
-        gp.check_result(gp.gp_camera_init(camera))
         
         
         while self.run_thread:
-            camera_file = gp.check_result(gp.gp_camera_capture_preview(camera))
-            file_data = gp.check_result(gp.gp_file_get_data_and_size(camera_file))
+            img = self.camera.capture_next_preview_as_np_array()
 
-            ds = io.BytesIO(file_data)
-            file_bytes = np.asarray(bytearray(ds.read()), dtype=np.uint8)
-            #print(file_bytes)
-            img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-            #res = cv2.resize(img,None,fx=0.2, fy=0.2, interpolation = cv2.INTER_CUBIC)
-            height, width, channels = img.shape
-            res = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            img = QImage(res, width, height, width*channels, QImage.Format_RGB888)
-            self.newImage.emit(img)
+            self.newImage.emit(self._convert_picture_to_qimage(img))
             if self.trigger == True:
                 print("test")
-                gp.check_result(gp.gp_camera_trigger_capture(camera))
+                self.camera.capture_image()
                 self.trigger = False
-        
-        gp.gp_camera_get_about(camera)
         
         time.sleep(1)
         print("deleting camera")
 
-        #def convert_gp_img_to_img(self, )
+    def _convert_picture_to_qimage(self, img):
+        img = cv2.imdecode(img, cv2.IMREAD_COLOR)   
+        height, width, channels = img.shape
+        res = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        return QImage(res, width, height, width*channels, QImage.Format_RGB888)
 
 class TriggerThread(QThread):
     trigger = Signal(bool)

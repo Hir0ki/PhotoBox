@@ -32,7 +32,7 @@ class Camera():
     def capture_next_preview_as_np_array(self):
         try:
             preview_file = self.camera.capture_preview()
-            preview_path =  gp.gp_file_get_data_and_size(preview_file)
+            preview_path =  gp.check_result(gp.gp_file_get_data_and_size(preview_file))
         except Exception as error_gp:
             log.log_msg_with_error("Error while capturing the preview", error_gp)
         try:
@@ -44,10 +44,6 @@ class Camera():
     def capture_image(self):
         try:
             self.camera.trigger_capture(self.context)
-        except gp.GP_ERROR as ex:
+        except Exception as ex:
             log.log_msg_with_error("error while takeing a picture", ex)
 
-
-tet = Camera()
-
-print(tet.capture_next_preview_as_np_array())
