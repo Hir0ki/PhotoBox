@@ -8,6 +8,7 @@ class Ardunio():
     def __init__(self, port ):
         self.port = port       
         self.connect() 
+        self.sio = io.TextIOWrapper(io.BufferedRWPair(self.connection, self.connection))
 
 
     def connect(self):
@@ -36,3 +37,9 @@ class Ardunio():
         except serial.SerialException as ex:
             print(f"error while sending msg{msg}")
             print(ex)
+
+    def wait_for_trigger(self):
+        while True:
+            trigger = unicode(self.sio.readline())
+            if trigger = "t":
+                break

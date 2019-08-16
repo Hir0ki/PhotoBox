@@ -19,7 +19,7 @@ class TriggerThread(QThread):
         self.wait()
 
     def run(self): 
-        
+        self.ardunio.wait_for_trigger()
         self.trigger_photo()
 
 
