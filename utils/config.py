@@ -25,4 +25,9 @@ class Config():
             return self._config_dict['image_show_time_in_s']
         except KeyError as ex:
             log.log_msg_with_error("couldn't load image_show_time_in_s", ex)
-    
+
+    def get_serial_port(self):
+        try:
+            return self._config_dict['serial_port']
+        except KeyError as ex:
+            log.log_msg_with_error("couldn't load serial_port", ex)

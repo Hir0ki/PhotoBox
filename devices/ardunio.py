@@ -41,5 +41,5 @@ class Ardunio():
     def wait_for_trigger(self):
         while True:
             trigger = unicode(self.sio.readline())
-            if trigger = "t":
+            if trigger == "t":
                 break

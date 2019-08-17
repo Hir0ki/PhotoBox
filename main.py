@@ -24,14 +24,14 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.setupUi(self)
         self.cameraThread = CameraThread()
         self.cameraThread.newImage.connect(self.newImageDetected)
-        self.triggerThread = TriggerThread()
+        self.triggerThread = TriggerThread(config.get_serial_port())
         self.triggerThread.trigger.connect(self.takePicture) 
         self.pushButton.clicked.connect(self.takePicture)
         self.pixmap = None
-        self.cameraThread.start()
-        self.triggerThread.start()
         if config.get_debug() == "False":
             self.pushButton.hide()
+        self.cameraThread.start()
+        self.triggerThread.start()
 
         self.showFullScreen()    
 
@@ -64,6 +64,7 @@ class CameraThread(QThread):
         self.run_thread = True
         self.trigger = False
         self.camera = Camera()
+        print("init done ")
 
     def __del__(self):
         print("closing thread") 
@@ -72,8 +73,8 @@ class CameraThread(QThread):
         self.wait()
 
     def run(self): 
-        
-        
+        print("starting preview")
+            
         while self.run_thread:
             # capturing preview and sending it to ui
             img = self.camera.capture_next_preview_as_np_array()
