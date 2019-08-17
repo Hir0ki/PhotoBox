@@ -1,6 +1,6 @@
 {
-    "output_path": "/home/david/Bilder",
-    "debug": "True",
+    "output_path": "/tmp",
+    "debug": "False",
     "image_show_time_in_s" : 5,
     "serial_port": "/dev/ttyUSB0"
 }

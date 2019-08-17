@@ -1,5 +1,6 @@
 from PySide2.QtCore import QThread, Signal, Slot
 from devices.ardunio import Ardunio
+import io
 #import RPi.GPIO as GPIO
 
 class TriggerThread(QThread):
@@ -10,7 +11,7 @@ class TriggerThread(QThread):
         self.run_thread = True
         self.ardunio = Ardunio(port)
 
-        self._gpio_setup()
+        #self._gpio_setup()
         
 
     def __del__(self):
@@ -19,13 +20,14 @@ class TriggerThread(QThread):
         self.wait()
 
     def run(self): 
-        self.ardunio.wait_for_trigger()
-        self.trigger_photo()
+        while self.run_thread == True:
+            self.ardunio.wait_for_trigger()
+            self.sleep(0.03)
+            self.trigger_photo()
 
 
     def trigger_photo(self):
         self.ardunio.send(b'T')
-        self.sleep(7)
         self.trigger.emit(True)
         self.ardunio.send(b'F')
 
