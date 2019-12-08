@@ -10,13 +10,13 @@
 
 from PySide2 import QtCore, QtGui, QtWidgets
 
+
 class Ui_PhotoBooth(object):
     def setupUi(self, PhotoBooth):
         PhotoBooth.setObjectName("PhotoBooth")
         PhotoBooth.resize(663, 421)
         PhotoBooth.setAutoFillBackground(False)
-        PhotoBooth.setStyleSheet("background-color: #444242\n"
-"")
+        PhotoBooth.setStyleSheet("background-color: #444242\n" "")
         self.centralwidget = QtWidgets.QWidget(PhotoBooth)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -26,7 +26,9 @@ class Ui_PhotoBooth(object):
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
@@ -46,6 +48,9 @@ class Ui_PhotoBooth(object):
         QtCore.QMetaObject.connectSlotsByName(PhotoBooth)
 
     def retranslateUi(self, PhotoBooth):
-        PhotoBooth.setWindowTitle(QtWidgets.QApplication.translate("PhotoBooth", "MainWindow", None, -1))
-        self.pushButton.setText(QtWidgets.QApplication.translate("PhotoBooth", "Aufnehmen", None, -1))
-
+        PhotoBooth.setWindowTitle(
+            QtWidgets.QApplication.translate("PhotoBooth", "MainWindow", None, -1)
+        )
+        self.pushButton.setText(
+            QtWidgets.QApplication.translate("PhotoBooth", "Aufnehmen", None, -1)
+        )
