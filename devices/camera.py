@@ -3,6 +3,7 @@ import time
 import io
 import logging
 import numpy as np
+import cv2
 
 
 class Camera:
@@ -31,7 +32,7 @@ class Camera:
                 logging.error("didn't find camera", exc_info=ex )
                 continue
             if is_first_loop_done == False:
-                print("camera found")
+                logging.info("camera found")
                 break
 
             is_first_loop_done = True
@@ -41,13 +42,14 @@ class Camera:
             preview_file = self.camera.capture_preview()
             preview_path = gp.check_result(gp.gp_file_get_data_and_size(preview_file))
             img =  self._convert_camera_to_np_array(preview_path)
+            logging.debug(f"camera preview data: {img} ")
             return cv2.imdecode(img, cv2.IMREAD_COLOR)
         except Exception as ex:
-            logging.error("Error while capturing the preview", exc_info=ex)
+            logging.error(f"Error while capturing the preview: {type(ex).__name__}", exc_info=ex)
 
     def capture_image(self):
         try:
-            return self.capture_next_preview_as_np_array(self.camera.capture(gp.GP_CAPTURE_IMAGE))
+            return self.capture_next_preview_as_np_array()
 
         except Exception as ex:
             logging.error("error while takeing a picture", exc_info=ex)

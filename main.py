@@ -95,9 +95,10 @@ class CameraThread(QThread):
                 #saved_picture = self.camera.save_image(
                 #   config.get_output_path(), cap_img
                 #)
-                pixmap = QPixmap(str(self.camera.capture_image()))
+                #pixmap = QPixmap(self.camera.capture_image())
 
-                self.newImage.emit(pixmap.toImage())
+                #self.newImage.emit(pixmap.toImage())
+                self.newImage.emit(self._convert_picture_to_qimage(img))
                 self.sleep(config.get_image_show_time_in_s())
                 self.trigger = False
 
