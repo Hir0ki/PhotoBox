@@ -9,7 +9,7 @@ class TriggerThread(QThread):
 
     def __init__(self, port):
         QThread.__init__(self)
-        logging.info("Starting trigger tread")
+        logging.info("Starting trigger thread")
         self.run_thread = True
         self.ardunio = Ardunio(port)
 

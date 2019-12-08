@@ -37,6 +37,6 @@ class Ardunio:
         self.logger.info("waiting for trigger")
         while True:
             trigger = self.connection.read()
-            self.logger.debug(trigger)
             if trigger == b"t":
+                self.logger.info(f"Trigger was set to: {trigger}")
                 break

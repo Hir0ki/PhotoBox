@@ -49,21 +49,26 @@ class Camera:
 
     def capture_image(self):
         try:
-            return self.capture_next_preview_as_np_array()
+            logging.info("Capture image")
+            cap_img_path = self.camera.capture(gp.GP_CAPTURE_IMAGE)
+            img_path = self.save_image("/tmp", cap_img_path)
+            return cv2.imread(img_path)
 
         except Exception as ex:
-            logging.error("error while takeing a picture", exc_info=ex)
+            logging.error(f"error while takeing a picture name: {type(ex).__name__}", exc_info=ex)
 
     def save_image(self, target_path, camera_file_path):
         try:
+            logging.info("Save image to disk")
             camera_file = self.camera.file_get(
                 camera_file_path.folder, camera_file_path.name, gp.GP_FILE_TYPE_NORMAL
             )
             target = f"{target_path}/{camera_file_path.name}"
             camera_file.save(target)
+            logging.info("Saved image to disk")
             return target
         except Exception as ex:
-            logging.error("error while saving a file", exc_info=ex)
+            logging.error(f"error while saving a file name: {type(ex).__name__}", exc_info=ex)
 
     def _convert_camera_to_np_array(self, camera_file):
         try:
