@@ -2,7 +2,6 @@ import gphoto2 as gp
 import time
 import io
 import numpy as np
-from devices import log
 
 
 class Camera:

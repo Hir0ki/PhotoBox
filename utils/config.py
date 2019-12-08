@@ -1,5 +1,4 @@
 import json
-from devices import log
 import logging
 import sys
 

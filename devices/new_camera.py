@@ -22,12 +22,12 @@ class Camera:
 
     def capture_next_preview_as_np_array(self):
         """Returns a numpy array with the image in RGB with no transparent channels"""
-        return cv2.imread('/home/hir0ki/Projects/PhotoBox/devices/Test_image.png')
+        return cv2.imread('/home/photobox/Photobox/devices/Test_image.png')
 
 
     def capture_image(self):
         """Captures image and write it to a file that returns it"""
-        return Path('/home/hir0ki/Projects/PhotoBox/devices/test_capture.png')
+        return Path('/home/photobox/Photobox/devices/test_capture.png')
 
 
     def save_image(self, target_path, camera_file_path):

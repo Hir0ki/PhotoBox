@@ -3,7 +3,7 @@
 import sys
 import io
 
-from devices.new_camera import Camera
+from devices.camera import Camera
 import time
 import cv2
 import numpy as np
