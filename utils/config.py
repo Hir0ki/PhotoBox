@@ -30,3 +30,6 @@ class Config:
             return self._config_dict["serial_port"]
         except KeyError as ex:
             log.log_msg_with_error("couldn't load serial_port", ex)
+
+def get_config():
+    return Config()
