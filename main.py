@@ -11,6 +11,7 @@ import gphoto2 as gp
 import PhotoBooth as pb
 from utils.config import Config
 from trigger import TriggerThread
+import logging
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide2.QtGui import QImage, QPixmap
@@ -23,6 +24,8 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.setupUi(self)
+        config.setup_logger()
+        self.logger = logging.getLogger()
         self.cameraThread = CameraThread()
         self.cameraThread.newImage.connect(self.newImageDetected)
         self.cameraThread.start()
@@ -48,7 +51,7 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
 
     def takePicture(self, test):
         self.cameraThread.trigger = True
-        print("set property")
+        self.logger.info("set camera trigger property")
 
     def closeEvent(self, event):
         self.cameraThread.__del__()
@@ -66,20 +69,21 @@ class CameraThread(QThread):
 
     def __init__(self):
         QThread.__init__(self)
-        print("Starting tread")
+        self.logger = logging.getLogger()
+        self.logger.info("Starting camera tread")
         self.run_thread = True
         self.trigger = False
         self.camera = Camera()
-        print("init done ")
+        self.logger.info("init of camara thread done ")
 
     def __del__(self):
-        print("closing thread")
+        self.logger.info("Closing camera thread")
         self.run_thread = False
         self.camera.disconnect_camera()
         self.wait()
 
     def run(self):
-        print("starting preview")
+        self.logger.info("starting preview")
 
         while self.run_thread:
             
@@ -98,7 +102,7 @@ class CameraThread(QThread):
                 self.trigger = False
 
         time.sleep(1)
-        print("deleting camera")
+        self.logger.ifno("deleting camera")
 
     def _convert_picture_to_qimage(self, img):
         height, width, channels = img.shape
