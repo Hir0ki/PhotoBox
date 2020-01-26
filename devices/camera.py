@@ -1,12 +1,21 @@
 import gphoto2 as gp
 import time
 import io
+import logging
 import numpy as np
 
 
 class Camera:
     def __init__(self):
         self._connect_to_camera()
+        self._init_logging()
+
+    def _init_logging(self):
+        self.callback_obj = gp.check_result(gp.use_python_logging(mapping={
+        gp.GP_LOG_ERROR   : logging.INFO,
+        gp.GP_LOG_DEBUG   : logging.DEBUG,
+        gp.GP_LOG_VERBOSE : logging.DEBUG - 3,
+        gp.GP_LOG_DATA    : logging.DEBUG - 6}))
 
     def _connect_to_camera(self):
         is_first_loop_done = False
@@ -17,10 +26,9 @@ class Camera:
                 self.camera.init(context)
             except gp.GPhoto2Error as ex:
                 if ex == gp.GP_ERROR_MODEL_NOT_FOUND:
-                    print("didn't find camera")
                     time.sleep(3)
                     continue
-                print(ex)
+                logging.error("didn't find camera", exc_info=ex )
                 continue
             if is_first_loop_done == False:
                 print("camera found")
@@ -33,15 +41,15 @@ class Camera:
             preview_file = self.camera.capture_preview()
             preview_path = gp.check_result(gp.gp_file_get_data_and_size(preview_file))
             return self._convert_camera_to_np_array(preview_path)
-        except Exception as error_gp:
-            log.log_msg_with_error("Error while capturing the preview", error_gp)
+        except Exception as ex:
+            logging.error("Error while capturing the preview", exc_info=ex)
 
     def capture_image(self):
         try:
             return self.camera.capture(gp.GP_CAPTURE_IMAGE)
 
         except Exception as ex:
-            log.log_msg_with_error("error while takeing a picture", ex)
+            logging.error("error while takeing a picture", exc_info=ex)
 
     def save_image(self, target_path, camera_file_path):
         try:
@@ -52,15 +60,15 @@ class Camera:
             camera_file.save(target)
             return target
         except Exception as ex:
-            log.log_msg_with_error("error while saving a file", ex)
+            logging.error("error while saving a file", exc_info=ex)
 
     def _convert_camera_to_np_array(self, camera_file):
         try:
             ds = io.BytesIO(camera_file)
             return np.asarray(bytearray(ds.read()), dtype=np.uint8)
         except Exception as error_io:
-            log.log_msg_with_error("error while reading picture from camera", error_io)
+            logging.error("error while reading picture from camera", exc_info=error_io)
 
     def disconnect_camera(self):
         self.camera.exit()
-        log.log_msg("exits camera")
+        logging.info("exits camera")
