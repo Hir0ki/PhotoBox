@@ -40,13 +40,14 @@ class Camera:
         try:
             preview_file = self.camera.capture_preview()
             preview_path = gp.check_result(gp.gp_file_get_data_and_size(preview_file))
-            return self._convert_camera_to_np_array(preview_path)
+            img =  self._convert_camera_to_np_array(preview_path)
+            return cv2.imdecode(img, cv2.IMREAD_COLOR)
         except Exception as ex:
             logging.error("Error while capturing the preview", exc_info=ex)
 
     def capture_image(self):
         try:
-            return self.camera.capture(gp.GP_CAPTURE_IMAGE)
+            return self.capture_next_preview_as_np_array(self.camera.capture(gp.GP_CAPTURE_IMAGE))
 
         except Exception as ex:
             logging.error("error while takeing a picture", exc_info=ex)
