@@ -1,6 +1,5 @@
 from PySide2.QtCore import QThread, Signal, Slot
 from devices.ardunio import Ardunio
-import io
 import logging
 
 
