@@ -1,6 +1,3 @@
-// any read access to ledMapping[] and Serial breaks the code (won't run at all), probably too much dynamic memory alloc
-// Fuck this shit
-
 #include <Arduino.h>
 
 #include <FastLED.h>
@@ -12,12 +9,18 @@
 // // 23 innen
 // // unten innen eingespeißt, gegen den Uhrzeigersinn
 
+// trigger button
 #define BUTTON_PIN      2
 #define DEBOUNCE        200
 #define INTERRUPT_MODE  RISING
 
-#define NUM_LEDS    282
+// menu buttons
+const uint8_t buttonPins[] =    { 4,  7,  8, 10 };
+const uint8_t buttonLedPins[] = { 3,  5,  6,  9 };
+const uint8_t buttonPressedLevel = LOW;
 #define DATA_PIN    11
+#define NUM_LEDS    282
+const uint8_t buttonNum = sizeof(buttonPins) / sizeof(buttonPins[0]);
 
 CRGBW leds[NUM_LEDS];
 CRGB *ledsRGB = (CRGB *) &leds[0];
@@ -42,30 +45,6 @@ CRGBW loadingColors[] = {red, yellow, green, cyan, blue, white};
 
 #define STRIP_OUTER_LEN 24
 #define STRIP_INNER_LEN 23
-/* 
-uint16_t ledMapping[NUM_LEDS];
-
-void generateLedMapping() {
-
-    //yes I know, I could've put it in loops too, but that would've been too unreadable imho
-    for(uint8_t i = 0; i < STRIP_INNER_LEN; i++) {
-        ledMapping[(i + (STRIP_INNER_LEN * 0)) * 2 + 1] = (STRIP_INNER_LEN * 3) - 1 - i;
-        ledMapping[(i + (STRIP_INNER_LEN * 1)) * 2 + 2] = (STRIP_INNER_LEN * 2) - 1 - i;
-        ledMapping[(i + (STRIP_INNER_LEN * 2)) * 2 + 3] = (STRIP_INNER_LEN * 1) - 1 - i;
-        ledMapping[(i + (STRIP_INNER_LEN * 3)) * 2 + 4] = (STRIP_INNER_LEN * 6) - 1 - i;
-        ledMapping[(i + (STRIP_INNER_LEN * 4)) * 2 + 5] = (STRIP_INNER_LEN * 5) - 1 - i;
-        ledMapping[(i + (STRIP_INNER_LEN * 5)) * 2 + 6] = (STRIP_INNER_LEN * 4) - 1 - i;
-    }
-
-    for(uint8_t i = 0; i < STRIP_OUTER_LEN; i++) {
-        ledMapping[(i + (STRIP_OUTER_LEN * 0)) * 2 - 0] = (STRIP_OUTER_LEN * 3) - 1 - i + STRIP_INNER_LEN * 6;
-        ledMapping[(i + (STRIP_OUTER_LEN * 1)) * 2 - 1] = (STRIP_OUTER_LEN * 2) - 1 - i + STRIP_INNER_LEN * 6;
-        ledMapping[(i + (STRIP_OUTER_LEN * 2)) * 2 - 2] = (STRIP_OUTER_LEN * 1) - 1 - i + STRIP_INNER_LEN * 6;
-        ledMapping[(i + (STRIP_OUTER_LEN * 3)) * 2 - 3] = (STRIP_OUTER_LEN * 6) - 1 - i + STRIP_INNER_LEN * 6;
-        ledMapping[(i + (STRIP_OUTER_LEN * 4)) * 2 - 4] = (STRIP_OUTER_LEN * 5) - 1 - i + STRIP_INNER_LEN * 6;
-        ledMapping[(i + (STRIP_OUTER_LEN * 5)) * 2 - 5] = (STRIP_OUTER_LEN * 4) - 1 - i + STRIP_INNER_LEN * 6;
-    }
-}*/
 
 uint8_t segmentOrder[] = {3, 2, 1, 6, 5, 4};
 
@@ -93,9 +72,10 @@ uint16_t mappedLedNum(uint16_t ledNum) {
             return (STRIP_OUTER_LEN * segmentOrder[i]) - 1 - (ledNum - outerMin) / 2 + STRIP_INNER_LEN * 6;
         }
     }
+    return 0;   // should never be reached
 }
 
-uint8_t segmentMapping[] = {2, 1, 0, 5, 4, 3};
+const uint8_t segmentMapping[] = {2, 1, 0, 5, 4, 3};
 
 void setSegment(uint8_t segment, CRGBW color) {
     segment = segmentMapping[segment];
@@ -228,12 +208,35 @@ void buttonIsr() {
     }
 }
 
+uint8_t lastButtonState[buttonNum] = {0};
+uint32_t lastButtonEvent[buttonNum] = {0};
+
+void handleButtons() {
+    for (int i = 0; i < buttonNum; i++) {
+        bool state = digitalRead(buttonPins[i]) == buttonPressedLevel;
+        if (state != lastButtonState[i]) {
+            if (state && millis() - lastButtonEvent[i] > DEBOUNCE) {
+                Serial.write('1' + i); // print number of button that was just pressed
+            }
+            lastButtonEvent[i] = millis();
+            lastButtonState[i] = state;
+        }
+    }
+}
+
 void setup() {
     Serial.begin(115200);
     Serial.println("Fotobox LED Control");
 
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonIsr, INTERRUPT_MODE);
+
+    for (int i = 0; i < buttonNum; i++) {
+        pinMode(buttonPins[i], INPUT_PULLUP);
+
+        pinMode(buttonLedPins[i], OUTPUT);
+        analogWrite(buttonLedPins[i], 0);
+    }
 
     FastLED.addLeds<WS2812B, DATA_PIN, RGB>(ledsRGB, getRGBWsize(NUM_LEDS));
     FastLED.show();
@@ -247,7 +250,6 @@ unsigned long lastAnimStep = 0;
 uint16_t animStep = 0;
 
 void loop() {  
-
     if(startCircleAnimation) {
             rainbowCircle(6000);
             startCircleAnimation = false;
@@ -277,6 +279,7 @@ void loop() {
 
     rainbowCircleLoop();
 
+    // do idle animation
     if(circleTime == 0 && idleAnimation && millis() - lastAnimStep >= IDLE_ANIM_STEPTIME) {
         lastAnimStep = millis();
         // uint16_t step = (millis() / 10) % NUM_LEDS;
@@ -292,6 +295,7 @@ void loop() {
         FastLED.show();
 
         animStep++;
-
     }
+
+    handleButtons();
 }
