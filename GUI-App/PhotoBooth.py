@@ -1,56 +1,91 @@
+
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'PhotoBooth.ui',
-# licensing of 'PhotoBooth.ui' applies.
-#
-# Created: Thu Aug 15 00:16:33 2019
-#      by: pyside2-uic  running on PySide2 5.13.0
-#
-# WARNING! All changes made in this file will be lost!
+################################################################################
+## Form generated from reading UI file 'PhotoBoothTRKIsa.ui'
+##
+## Created by: Qt User Interface Compiler version 5.15.2
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
 
 
 class Ui_PhotoBooth(object):
     def setupUi(self, PhotoBooth):
-        PhotoBooth.setObjectName("PhotoBooth")
+        if not PhotoBooth.objectName():
+            PhotoBooth.setObjectName(u"PhotoBooth")
         PhotoBooth.resize(663, 421)
         PhotoBooth.setAutoFillBackground(False)
-        PhotoBooth.setStyleSheet("background-color: #444242\n" "")
-        self.centralwidget = QtWidgets.QWidget(PhotoBooth)
-        self.centralwidget.setObjectName("centralwidget")
-        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
-        self.gridLayout.setObjectName("gridLayout")
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored
-        )
+        PhotoBooth.setStyleSheet(u"background-color: #444242\n"
+"")
+        self.centralwidget = QWidget(PhotoBooth)
+        self.centralwidget.setObjectName(u"centralwidget")
+        self.gridLayout = QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.verticalLayout_4 = QVBoxLayout()
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.label = QLabel(self.centralwidget)
+        self.label.setObjectName(u"label")
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
-        self.label.setText("")
-        self.label.setObjectName("label")
-        self.verticalLayout.addWidget(self.label)
-        self.horizontalLayout.addLayout(self.verticalLayout)
-        self.horizontalLayout.setStretch(0, 2)
-        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setObjectName("pushButton")
-        self.gridLayout.addWidget(self.pushButton, 1, 0, 1, 1)
+        self.label.setMaximumSize(QSize(30000, 30000))
+
+        self.verticalLayout_4.addWidget(self.label)
+
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setSpacing(6)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalLayout_5.setSizeConstraint(QLayout.SetDefaultConstraint)
+        self.label_4 = QLabel(self.centralwidget)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setMinimumSize(QSize(30, 50))
+
+        self.horizontalLayout_5.addWidget(self.label_4)
+
+        self.label_5 = QLabel(self.centralwidget)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setMinimumSize(QSize(30, 50))
+
+        self.horizontalLayout_5.addWidget(self.label_5)
+
+        self.label_3 = QLabel(self.centralwidget)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setMinimumSize(QSize(30, 50))
+
+        self.horizontalLayout_5.addWidget(self.label_3)
+
+        self.label_2 = QLabel(self.centralwidget)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setMinimumSize(QSize(30, 50))
+
+        self.horizontalLayout_5.addWidget(self.label_2)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout_5)
+
+
+        self.gridLayout.addLayout(self.verticalLayout_4, 1, 0, 1, 1)
+
         PhotoBooth.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(PhotoBooth)
-        QtCore.QMetaObject.connectSlotsByName(PhotoBooth)
+
+        QMetaObject.connectSlotsByName(PhotoBooth)
+    # setupUi
 
     def retranslateUi(self, PhotoBooth):
-        PhotoBooth.setWindowTitle(
-            QtWidgets.QApplication.translate("PhotoBooth", "MainWindow", None, -1)
-        )
-        self.pushButton.setText(
-            QtWidgets.QApplication.translate("PhotoBooth", "Aufnehmen", None, -1)
-        )
+        PhotoBooth.setWindowTitle(QCoreApplication.translate("PhotoBooth", u"MainWindow", None))
+        self.label.setText(QCoreApplication.translate("PhotoBooth", u"TextLabel", None))
+        self.label_4.setText(QCoreApplication.translate("PhotoBooth", u"Button1", None))
+        self.label_5.setText(QCoreApplication.translate("PhotoBooth", u"button2", None))
+        self.label_3.setText(QCoreApplication.translate("PhotoBooth", u"button", None))
+        self.label_2.setText(QCoreApplication.translate("PhotoBooth", u"button", None))
+    # retranslateUi
+

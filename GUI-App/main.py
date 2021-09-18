@@ -23,13 +23,10 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.cameraThread = CamaraService.CameraThread()
         self.cameraThread.newImage.connect(self.newImageDetected)
         self.cameraThread.start()
-        self.pushButton.clicked.connect(self.takePicture)
         self.pixmap = None
-        if config.get_debug() == "False":
-            self.pushButton.hide()
-            self.triggerThread = SerialService.ArduinoThread(config.get_serial_port())
-            self.triggerThread.trigger.connect(self.takePicture)
-            self.triggerThread.start()
+        self.triggerThread = SerialService.ArduinoThread(config.get_serial_port())
+        self.triggerThread.trigger.connect(self.takePicture)
+        self.triggerThread.start()
 
         self.showFullScreen()
 
