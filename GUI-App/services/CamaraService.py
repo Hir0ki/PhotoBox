@@ -9,7 +9,7 @@ from devices.camera import Camera
 
 
 class CameraThread(QThread):
-    newImage = Signal(QImage)
+    newImage: Signal = Signal(QImage)
 
     def __init__(self):
         QThread.__init__(self)
@@ -17,6 +17,7 @@ class CameraThread(QThread):
         self.logger.info("Starting camera tread")
         self.run_thread = True
         self.trigger = False
+        self.session_dir = None
         self.camera = Camera()
         self.logger.info("init of camara thread done ")
 
@@ -33,7 +34,7 @@ class CameraThread(QThread):
         while self.run_thread:
 
             if self.trigger == True:
-                img = self.camera.capture_image()
+                img = self.camera.capture_image(self.session_dir)
                 cov_img = self._convert_picture_to_qimage(img)
                 self.newImage.emit(cov_img)
                 self.sleep(Config().get_image_show_time_in_s())
@@ -45,6 +46,12 @@ class CameraThread(QThread):
 
         time.sleep(1)
         self.logger.info("deleting camera")
+
+    def start_preview(self):
+        pass
+
+    def stop_preview(self):
+        pass
 
     def _convert_picture_to_qimage(self, img):
         height, width, channels = img.shape

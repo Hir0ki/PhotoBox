@@ -3,3 +3,4 @@ pyside2
 gphoto2
 opencv-python-headless
 pyserial
+shortuuid

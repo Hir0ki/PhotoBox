@@ -5,7 +5,6 @@ import logging
 import numpy as np
 import cv2
 
-
 class Camera:
     def __init__(self):
         self._connect_to_camera()
@@ -47,11 +46,11 @@ class Camera:
         except Exception as ex:
             logging.error(f"Error while capturing the preview: {type(ex).__name__}", exc_info=ex)
 
-    def capture_image(self):
+    def capture_image(self, dir_path):
         try:
             logging.info("Capture image")
             cap_img_path = self.camera.capture(gp.GP_CAPTURE_IMAGE)
-            img_path = self.save_image("/tmp", cap_img_path)
+            img_path = self.save_image(str(dir_path), cap_img_path)
             return cv2.imread(img_path)
 
         except Exception as ex:

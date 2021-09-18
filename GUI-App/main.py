@@ -3,9 +3,11 @@
 import sys
 import logging
 
+import shortuuid
+
 import PhotoBooth as pb
 from utils.config import Config
-from services import CamaraService, SerialService
+from services import CamaraService, SerialService, SessionService
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide2.QtGui import QPixmap
@@ -20,10 +22,16 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.setupUi(self)
         config.setup_logger()
         self.logger = logging.getLogger()
+        
+        self.SessionService = SessionService.SessionService()
+        self.SessionService.start_new_session()
         self.cameraThread = CamaraService.CameraThread()
+        self.cameraThread.session_dir = self.SessionService.session_path
         self.cameraThread.newImage.connect(self.newImageDetected)
         self.cameraThread.start()
+        
         self.pixmap = None
+
         self.triggerThread = SerialService.ArduinoThread(config.get_serial_port())
         self.triggerThread.trigger.connect(self.takePicture)
         self.triggerThread.start()
@@ -46,6 +54,7 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
 
     def closeEvent(self, event):
         self.cameraThread.__del__()
+        self.triggerThread.__del__()
         event.accept()
 
     def newImageDetected(self, img):
@@ -56,7 +65,6 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
 
     def keyPressEvent(self, event):
         """Close application from escape key.
-
         results in QMessageBox dialog from closeEvent, good but how/why?
         """
         if event.key() == Qt.Key_Escape:

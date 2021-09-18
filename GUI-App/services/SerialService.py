@@ -16,7 +16,7 @@ class ArduinoThread(QThread):
     def __del__(self):
         logging.info("closing trigger thread")
         self.run_thread = False
-        self.wait()
+        self.wait(1)
 
     def run(self):
         while self.run_thread == True:
