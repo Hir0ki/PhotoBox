@@ -3,7 +3,7 @@ from devices.ardunio import Ardunio
 import logging
 
 
-class TriggerThread(QThread):
+class ArduinoThread(QThread):
     trigger = Signal(bool)
 
     def __init__(self, port):

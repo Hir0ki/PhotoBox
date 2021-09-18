@@ -1,21 +1,15 @@
 #!/usr/bin/env python
 
 import sys
-import io
-
-from devices.camera import Camera
-import time
-import cv2
-import numpy as np
-import gphoto2 as gp
-import PhotoBooth as pb
-from utils.config import Config
-from trigger import TriggerThread
 import logging
 
+import PhotoBooth as pb
+from utils.config import Config
+from services import CamaraService, ArduinoThread
+
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
-from PySide2.QtGui import QImage, QPixmap
-from PySide2.QtCore import QThread, Qt, QObject, Signal, Slot
+from PySide2.QtGui import QPixmap
+from PySide2.QtCore import Qt
 
 config = Config()
 
@@ -26,14 +20,14 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.setupUi(self)
         config.setup_logger()
         self.logger = logging.getLogger()
-        self.cameraThread = CameraThread()
+        self.cameraThread = CamaraService()
         self.cameraThread.newImage.connect(self.newImageDetected)
         self.cameraThread.start()
         self.pushButton.clicked.connect(self.takePicture)
         self.pixmap = None
         if config.get_debug() == "False":
             self.pushButton.hide()
-            self.triggerThread = TriggerThread(config.get_serial_port())
+            self.triggerThread = ArduinoThread(config.get_serial_port())
             self.triggerThread.trigger.connect(self.takePicture)
             self.triggerThread.start()
 
@@ -62,54 +56,6 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.label.setPixmap(
             self.pixmap.scaled(self.label.width(), self.label.height())
         )
-
-
-class CameraThread(QThread):
-    newImage = Signal(QImage)
-
-    def __init__(self):
-        QThread.__init__(self)
-        self.logger = logging.getLogger()
-        self.logger.info("Starting camera tread")
-        self.run_thread = True
-        self.trigger = False
-        self.camera = Camera()
-        self.logger.info("init of camara thread done ")
-
-    def __del__(self):
-        self.logger.info("Closing camera thread")
-        self.run_thread = False
-        self.camera.disconnect_camera()
-        self.logger.info("Closed camera")
-        self.wait()
-
-    def run(self):
-        self.logger.info("starting preview")
-
-        while self.run_thread:
-
-            if self.trigger == True:
-                img = self.camera.capture_image()
-                cov_img = self._convert_picture_to_qimage(img)
-                self.newImage.emit(cov_img)
-                self.sleep(config.get_image_show_time_in_s())
-                self.logger.info("Reset trigger porperty")
-                self.trigger = False
-
-            img = self.camera.capture_next_preview_as_np_array()
-            self.newImage.emit(self._convert_picture_to_qimage(img))
-
-        time.sleep(1)
-        self.logger.info("deleting camera")
-
-    def _convert_picture_to_qimage(self, img):
-        height, width, channels = img.shape
-        if height > 3000 or width > 4000:
-            img = cv2.resize(img , (1920, 1080))             
-            height = 1080
-            width = 1920
-        res = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        return QImage(res, width, height, width * channels, QImage.Format_RGB888)
 
 
 if __name__ == "__main__":
