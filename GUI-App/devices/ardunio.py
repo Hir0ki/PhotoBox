@@ -35,8 +35,17 @@ class Ardunio:
 
     def wait_for_trigger(self):
         self.logger.info("waiting for trigger")
+        # irgnore first 
+        count = 0
+
+        while count != 21:
+            trigger = self.connection.read()
+            if trigger != b"":
+                count += 1
+        
         while True:
             trigger = self.connection.read()
             if trigger == b"t":
-                self.logger.info(f"Trigger was set to: {trigger}")
+                self.logger.info(f"Trigger was set to: {trigger}") 
                 break
+
