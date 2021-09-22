@@ -31,6 +31,12 @@ class Config:
             return self._config_dict["serial_port"]
         except KeyError as ex:
             log.log_msg_with_error("couldn't load serial_port", ex)
+    
+    def get_button_height(self):
+        try:
+            return self._config_dict["button_height"]
+        except KeyError as ex:
+            log.log_msg_with_error("couldn't load button_height", ex)
 
     def setup_logger(self):
         root = logging.getLogger()

@@ -6,7 +6,7 @@ import logging
 
 import PhotoBooth as pb
 from utils.config import Config
-from services import CamaraService, SerialService, SessionService, GraphicsViewerService
+from services import CamaraService, SerialService, SessionService, GraphicsViewerService, ControllerService
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QGraphicsScene, QGraphicsPixmapItem
 from PySide2.QtGui import QPixmap
@@ -41,16 +41,21 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.SerialThread.sendtriggermessage.connect(self.cameraThread.set_trigger)
         self.SerialThread.start()
 
+        self.controller_service = ControllerService.ControllerService(self)
+
         self.showFullScreen()
 
     def resizeEvent(self, event):
         
+        # handel graphics resize
         if not self.graphics_view_service.pixmap is None:
             
             self.graphics_view_service.pixmap.scaled(
                 self.graphicsView.width(),self.graphicsView.height(),Qt.KeepAspectRatio
             )
         self.graphics_view_service.gaphices_viewer.setGeometry(0,0,self.width(),self.height())
+        # handel button resize
+        self.controller_service.scale_buttons()
         QWidget.resizeEvent(self, event)
 
 
