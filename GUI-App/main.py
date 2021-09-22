@@ -8,7 +8,7 @@ import PhotoBooth as pb
 from utils.config import Config
 from services import CamaraService, SerialService, SessionService, ControllerService
 
-from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
+from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QGraphicsScene, QGraphicsPixmapItem
 from PySide2.QtGui import QPixmap
 from PySide2.QtCore import Qt, Signal
 
@@ -47,14 +47,12 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         if not self.pixmap is None:
             self.label.setPixmap(
                 self.pixmap.scaled(
-                    self.label.width(), self.label.height(), Qt.KeepAspectRatio
+                    self.graphicsView.width(),self.graphicsView.height(),Qt.KeepAspectRatio
                 )
             )
 
         QWidget.resizeEvent(self, event)
 
-
-    
 
     def closeEvent(self, event):
         self.cameraThread.__del__()
@@ -63,9 +61,12 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
 
     def newImageDetected(self, img):
         self.pixmap = QPixmap(img)
-        self.label.setPixmap(
-            self.pixmap.scaled(self.label.width(), self.label.height())
-        )
+        self.pixmap = self.pixmap.scaled(self.graphicsView.width(),self.graphicsView.height(),Qt.KeepAspectRatio)
+        scene = QGraphicsScene()
+        pixmap_item = QGraphicsPixmapItem(self.pixmap)
+        
+        scene.addItem(pixmap_item)
+        self.graphicsView.setScene(scene)
 
     def keyPressEvent(self, event):
         """Close application from escape key.

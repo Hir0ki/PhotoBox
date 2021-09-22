@@ -50,6 +50,7 @@ class CameraThread(QThread):
 
     @Slot(bool)
     def set_trigger(self, state:bool):
+        logging.info(f"Trigger state set to: {state}")
         self.trigger = state
 
     @Slot(bool)

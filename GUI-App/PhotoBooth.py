@@ -1,8 +1,7 @@
-
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'PhotoBoothTRKIsa.ui'
+## Form generated from reading UI file 'PhotoBoothlQufxW.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -28,16 +27,10 @@ class Ui_PhotoBooth(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.verticalLayout_4 = QVBoxLayout()
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.label = QLabel(self.centralwidget)
-        self.label.setObjectName(u"label")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy)
-        self.label.setMaximumSize(QSize(30000, 30000))
+        self.graphicsView = QGraphicsView(self.centralwidget)
+        self.graphicsView.setObjectName(u"graphicsView")
 
-        self.verticalLayout_4.addWidget(self.label)
+        self.verticalLayout_4.addWidget(self.graphicsView)
 
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setSpacing(6)
@@ -82,7 +75,6 @@ class Ui_PhotoBooth(object):
 
     def retranslateUi(self, PhotoBooth):
         PhotoBooth.setWindowTitle(QCoreApplication.translate("PhotoBooth", u"MainWindow", None))
-        self.label.setText(QCoreApplication.translate("PhotoBooth", u"TextLabel", None))
         self.label_4.setText(QCoreApplication.translate("PhotoBooth", u"Button1", None))
         self.label_5.setText(QCoreApplication.translate("PhotoBooth", u"button2", None))
         self.label_3.setText(QCoreApplication.translate("PhotoBooth", u"button", None))

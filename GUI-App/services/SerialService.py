@@ -31,12 +31,12 @@ class SerialThread(QThread):
     def send_signal_for_message(self, message: bytes):
 
         if message == b't':
-            self.sendtriggermessage.emit(message)
+            self.sendtriggermessage.emit(True)
         if message == b'1':
-            self.button1press.emit(message)
+            self.button1press.emit(True)
         if message == b'2':
-            self.button2press.emit(message)
+            self.button2press.emit(True)
         if message == b'3':
-            self.button3press.emit(message)
+            self.button3press.emit(True)
         if message == b'4':
-            self.button4press.emit(message)
+            self.button4press.emit(True)
