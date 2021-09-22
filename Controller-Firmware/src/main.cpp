@@ -15,10 +15,10 @@
 #define INTERRUPT_MODE  RISING
 
 // menu buttons
-const uint8_t buttonPins[] =    { 4,  7,  8, 10 };
-const uint8_t buttonLedPins[] = { 3,  5,  6,  9 };
-const uint8_t buttonPressedLevel = LOW;
-#define DATA_PIN    11
+const uint8_t buttonPins[] =    { 3,  4,  7,  8 };
+const uint8_t buttonLedPins[] = { 5,  6,  9, 10 };
+const uint8_t buttonPressedLevel = HIGH;
+#define DATA_PIN    16 //11
 #define NUM_LEDS    282
 const uint8_t buttonNum = sizeof(buttonPins) / sizeof(buttonPins[0]);
 
@@ -224,9 +224,15 @@ void handleButtons() {
     }
 }
 
+void setButtonLed(uint8_t buttonId, bool state) {
+    if (buttonId < buttonNum) {
+        digitalWrite(buttonLedPins[buttonId], state);
+    }
+}
+
 void setup() {
     Serial.begin(115200);
-    Serial.println("Fotobox LED Control");
+    // Serial.println("Fotobox LED Control");
 
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonIsr, INTERRUPT_MODE);
@@ -273,6 +279,14 @@ void loop() {
             case 'F':
                 flash();
                 idleAnimation = true;
+                break;
+            default:
+                if (c >= '1' && c <= '4') {
+                    setButtonLed(c - '1', 1);
+                }
+                else if (c >= '5' && c <= '8') {
+                    setButtonLed(c - '5', 0);
+                }
                 break;
         }
     }
