@@ -45,7 +45,8 @@ class Ardunio:
         
         while True:
             trigger = self.connection.read()
-            if trigger == b"t":
+            if trigger == b"t" or trigger in [ b"1",b"2", b"3", b"4"]:
                 self.logger.info(f"Trigger was set to: {trigger}") 
-                break
+                return trigger
+                
 

@@ -2,7 +2,7 @@ import logging
 import time
 import cv2
 from utils.config import Config
-from PySide2.QtCore import QThread, Signal, Signal
+from PySide2.QtCore import QThread, Signal, Signal, Slot
 from PySide2.QtGui import QImage
 from devices.camera import Camera
 
@@ -18,6 +18,7 @@ class CameraThread(QThread):
         self.run_thread = True
         self.trigger = False
         self.session_dir = None
+        self.preview_is_aktive = True
         self.camera = Camera()
         self.logger.info("init of camara thread done ")
 
@@ -40,24 +41,26 @@ class CameraThread(QThread):
                 self.sleep(Config().get_image_show_time_in_s())
                 self.logger.info("Reset trigger porperty")
                 self.trigger = False
-
-            img = self.camera.capture_next_preview_as_np_array()
-            self.newImage.emit(self._convert_picture_to_qimage(img))
+            if self.preview_is_aktive == True:
+                img = self.camera.capture_next_preview_as_np_array()
+                self.newImage.emit(self._convert_picture_to_qimage(img))
 
         time.sleep(1)
         self.logger.info("deleting camera")
 
-    def start_preview(self):
-        pass
+    @Slot(bool)
+    def set_trigger(self, state:bool):
+        self.trigger = state
 
-    def stop_preview(self):
-        pass
+    @Slot(bool)
+    def set_preview_is_aktive(self, state:bool):
+        self.preview_is_aktive = state
 
     def _convert_picture_to_qimage(self, img):
         height, width, channels = img.shape
         if height > 3000 or width > 4000:
-            img = cv2.resize(img , (1920, 1080))             
-            height = 1080
-            width = 1920
+           img = cv2.resize(img , (1920, 1080))             
+           height = 1080
+           width = 1920
         res = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         return QImage(res, width, height, width * channels, QImage.Format_RGB888)
