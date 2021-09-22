@@ -31,16 +31,17 @@ class Config:
             return self._config_dict["serial_port"]
         except KeyError as ex:
             log.log_msg_with_error("couldn't load serial_port", ex)
-    
+
     def setup_logger(self):
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)
 
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
         handler.setFormatter(formatter)
         root.addHandler(handler)
+
 
 def get_config():
     return Config()

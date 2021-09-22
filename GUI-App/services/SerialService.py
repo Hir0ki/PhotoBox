@@ -9,14 +9,12 @@ class SerialThread(QThread):
     button2press = Signal(bytes)
     button3press = Signal(bytes)
     button4press = Signal(bytes)
-    
 
     def __init__(self, port):
         QThread.__init__(self)
         logging.info("Starting trigger thread")
         self.run_thread = True
         self.ardunio = Ardunio(port)
-
 
     def __del__(self):
         logging.info("closing trigger thread")
@@ -30,13 +28,13 @@ class SerialThread(QThread):
 
     def send_signal_for_message(self, message: bytes):
 
-        if message == b't':
+        if message == b"t":
             self.sendtriggermessage.emit(True)
-        if message == b'1':
+        if message == b"1":
             self.button1press.emit(True)
-        if message == b'2':
+        if message == b"2":
             self.button2press.emit(True)
-        if message == b'3':
+        if message == b"3":
             self.button3press.emit(True)
-        if message == b'4':
+        if message == b"4":
             self.button4press.emit(True)

@@ -3,6 +3,7 @@ import time
 import io
 import logging
 
+
 class Ardunio:
     def __init__(self, port):
         self.port = port
@@ -17,7 +18,9 @@ class Ardunio:
                 self.logger.info("Conected to serial device")
                 break
             except serial.SerialException as ex:
-                self.logger.error(f"Couln't connect to Serial on port: {self.port}", exc_info=ex) 
+                self.logger.error(
+                    f"Couln't connect to Serial on port: {self.port}", exc_info=ex
+                )
                 time.sleep(1)
 
     def close_serial_connection(self):
@@ -25,28 +28,26 @@ class Ardunio:
             self.connection.close()
             self.logger.info("Closed serial connection")
         except serial.SerialException as ex:
-            self.logger.error("error while closing connection", exc_info=ex )
+            self.logger.error("error while closing connection", exc_info=ex)
 
     def send(self, msg):
         try:
             self.connection.write(msg)
         except serial.SerialException as ex:
-            self.logger.error("error while sending msg: {msg}", exc_info=ex )
+            self.logger.error("error while sending msg: {msg}", exc_info=ex)
 
     def wait_for_trigger(self):
         self.logger.info("waiting for trigger")
-        # irgnore first 
+        # irgnore first
         count = 0
 
         while count != 21:
             trigger = self.connection.read()
             if trigger != b"":
                 count += 1
-        
+
         while True:
             trigger = self.connection.read()
-            if trigger == b"t" or trigger in [ b"1",b"2", b"3", b"4"]:
-                self.logger.info(f"Message from Arduino was set to: {trigger}") 
+            if trigger == b"t" or trigger in [b"1", b"2", b"3", b"4"]:
+                self.logger.info(f"Message from Arduino was set to: {trigger}")
                 return trigger
-                
-

@@ -6,7 +6,7 @@ import logging
 
 import PhotoBooth as pb
 from utils.config import Config
-from services import CamaraService, SerialService, SessionService, ControllerService
+from services import CamaraService, SerialService, SessionService, GraphicsViewerService
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QGraphicsScene, QGraphicsPixmapItem
 from PySide2.QtGui import QPixmap
@@ -24,18 +24,18 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.setupUi(self)
         config.setup_logger()
         self.logger = logging.getLogger()
-         
 
+        self.graphics_view_service = GraphicsViewerService.GraphicsViewService(self.graphicsView, self)
+        
         self.SessionService = SessionService.SessionService()
         self.SessionService.start_new_session()
         
         self.cameraThread = CamaraService.CameraThread()
         self.cameraThread.session_dir = self.SessionService.session_path
-        self.cameraThread.newImage.connect(self.newImageDetected)
+        self.cameraThread.newImage.connect(self.graphics_view_service.show_new_image)
         self.set_preview_signal.connect(self.cameraThread.set_preview_is_aktive)
         self.cameraThread.start()
         
-        self.pixmap = None
 
         self.SerialThread = SerialService.SerialThread(config.get_serial_port())
         self.SerialThread.sendtriggermessage.connect(self.cameraThread.set_trigger)
@@ -44,13 +44,13 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.showFullScreen()
 
     def resizeEvent(self, event):
-        if not self.pixmap is None:
-            self.label.setPixmap(
-                self.pixmap.scaled(
-                    self.graphicsView.width(),self.graphicsView.height(),Qt.KeepAspectRatio
-                )
+        
+        if not self.graphics_view_service.pixmap is None:
+            
+            self.graphics_view_service.pixmap.scaled(
+                self.graphicsView.width(),self.graphicsView.height(),Qt.KeepAspectRatio
             )
-
+        self.graphics_view_service.gaphices_viewer.setGeometry(0,0,self.width(),self.height())
         QWidget.resizeEvent(self, event)
 
 
@@ -58,15 +58,6 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.cameraThread.__del__()
         self.SerialThread.__del__()
         event.accept()
-
-    def newImageDetected(self, img):
-        self.pixmap = QPixmap(img)
-        self.pixmap = self.pixmap.scaled(self.graphicsView.width(),self.graphicsView.height(),Qt.KeepAspectRatio)
-        scene = QGraphicsScene()
-        pixmap_item = QGraphicsPixmapItem(self.pixmap)
-        
-        scene.addItem(pixmap_item)
-        self.graphicsView.setScene(scene)
 
     def keyPressEvent(self, event):
         """Close application from escape key.

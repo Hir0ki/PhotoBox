@@ -7,7 +7,6 @@ from PySide2.QtGui import QImage
 from devices.camera import Camera
 
 
-
 class CameraThread(QThread):
     newImage: Signal = Signal(QImage)
 
@@ -49,19 +48,19 @@ class CameraThread(QThread):
         self.logger.info("deleting camera")
 
     @Slot(bool)
-    def set_trigger(self, state:bool):
+    def set_trigger(self, state: bool):
         logging.info(f"Trigger state set to: {state}")
         self.trigger = state
 
     @Slot(bool)
-    def set_preview_is_aktive(self, state:bool):
+    def set_preview_is_aktive(self, state: bool):
         self.preview_is_aktive = state
 
     def _convert_picture_to_qimage(self, img):
         height, width, channels = img.shape
         if height > 3000 or width > 4000:
-           img = cv2.resize(img , (1920, 1080))             
-           height = 1080
-           width = 1920
+            img = cv2.resize(img, (1920, 1080))
+            height = 1080
+            width = 1920
         res = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         return QImage(res, width, height, width * channels, QImage.Format_RGB888)
