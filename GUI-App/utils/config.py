@@ -43,6 +43,17 @@ class Config:
             return self._config_dict["base_url"]
         except KeyError as ex:
             log.log_msg_with_error("couldn't load base_url", ex)
+    def get_start_page_png_path(self):
+        try:
+            return self._config_dict["start_page_png_path"]
+        except KeyError as ex:
+            log.log_msg_with_error("couldn't load start_page_png_path", ex)
+
+    def get_qr_code_png_path(self):
+        try:
+            return self._config_dict["qr_code_png_path"]
+        except KeyError as ex:
+            log.log_msg_with_error("couldn't load qr_code_png_path", ex)
 
     def setup_logger(self):
         root = logging.getLogger()

@@ -5,6 +5,7 @@ from PySide2.QtWidgets import QMainWindow, QGraphicsScene, QPushButton
 from utils.config import Config
 from PySide2.QtGui import QPixmap, QFont
 from services import GraphicsViewerService, SessionService, QRCodeService
+from PIL import Image, ImageQt
 
 class ControllerService():
     
@@ -39,15 +40,17 @@ class ControllerService():
 
         scene = QGraphicsScene()
         url = self.config.get_base_url() + self.session_service.session_uuid
-        text = f"Die Bilder können unter der Addresse: \n{url} \ngedownloaded werden"
-
         self._clear_all_buttons()
-        self._rename_button(self.main_window.pushButton_4,"Neue Session")
-        self._rename_button(self.main_window.pushButton,"Zurück \n zur Session")
+        self._rename_button(self.main_window.pushButton_4,"New Session")
+        self._rename_button(self.main_window.pushButton,"Contiune Session")
         self.main_window.button_led.emit((True,False,False,True))
 
-        pixmap_qr_code = QPixmap.fromImage(self.qr_code_serivce.generade_qr_code(url))
-        self.grapics_view_service.create_qr_scene(scene,pixmap_qr_code,text)
+        im = Image.open(self.config.get_qr_code_png_path())
+        
+        pixmap = QPixmap.fromImage(ImageQt.ImageQt(im))
+
+        pixmap_qr_code = QPixmap.fromImage(self.qr_code_serivce.generade_qr_code("https://"+ url))
+        self.grapics_view_service.create_qr_scene(scene,pixmap_qr_code,url, pixmap)
 
         self.grapics_view_service.show_scene(scene)
 
@@ -56,8 +59,8 @@ class ControllerService():
         self.main_window.set_preview_signal.emit(True)
         
         self._clear_all_buttons()
-        self._rename_button(self.main_window.pushButton_4,"Foto")
-        self._rename_button(self.main_window.pushButton_3,"Session \n Beenden")
+        self._rename_button(self.main_window.pushButton_4,"Take Picture")
+        self._rename_button(self.main_window.pushButton_3,"Finalise Session")
         self.main_window.button_led.emit((False,False,True,True))
         
     def draw_new_image(self, img):
@@ -72,7 +75,12 @@ class ControllerService():
         self.main_window.button_led.emit((False,False,False,True))
 
         scene = QGraphicsScene()
-        self.grapics_view_service.create_start_scene(scene, "Wilkommen zur Photobox bitte den Start Button Drücken")
+
+        im = Image.open(self.config.get_start_page_png_path())
+        
+        pixmap = QPixmap.fromImage(ImageQt.ImageQt(im))
+
+        self.grapics_view_service.create_start_scene(scene, pixmap)
 
         self.grapics_view_service.show_scene(scene)
     

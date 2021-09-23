@@ -4,5 +4,8 @@
     "image_show_time_in_s" : 5,
     "serial_port": "/dev/ttyACM0",
     "button_height": 100,
-    "base_url": "https://fotobox.techbeard.de/pictures/"
+    "base_url": "ftbx.fun/pictures/",
+    "start_page_png_path" : "./assets/photobox-main.png",
+    "qr_code_png_path" : "./assets/photobox-link.png",
+    "exit_svg": "./assets/exit.svg"
 }

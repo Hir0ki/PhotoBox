@@ -39,26 +39,39 @@ class GraphicsViewService:
         scene.addItem(pixmap_item)
         self.gaphices_viewer.setScene(scene)
 
-    def create_qr_scene(self, scene, qr_pixel_map, qr_text) :
+    def create_qr_scene(self, scene, qr_pixel_map, qr_text, backgound_pixmap) :
         
         pixmap_item = QGraphicsPixmapItem(qr_pixel_map)
-        half_window_width = self.photobooth_window.width()/2
-        pixmap_item.setX(-half_window_width)
+        
+        pixmap_item.setY(100)
+        pixmap_item.setX(100)
+
+        background_item = QGraphicsPixmapItem(backgound_pixmap)
+
 
         url_item = QGraphicsTextItem(qr_text)
         url_item.setFont(QFont('Arial', 50))
         url_item.setTextWidth(820)
-
+        url_item.setY(450)
+        url_item.setX(1000)
+        url_item.setZValue(1)
+       
+        pixmap_item.setZValue(1)
+        background_item.setZValue(-1)
+        
         scene.addItem(pixmap_item)
         scene.addItem(url_item)
+        scene.addItem(background_item)
+        
 
         return scene
     
-    def create_start_scene(self, scene, text):
-        text_item = QGraphicsTextItem(text)
+    def create_start_scene(self, scene, qr_pixel_map):
+        text_item = QGraphicsTextItem("Wilkommen zur Photobox bitte den Start Button Drücken")
         text_item.setFont(QFont('Arial', 50))
+        pixmap_item = QGraphicsPixmapItem(qr_pixel_map)
         
-        scene.addItem(text_item)
+        scene.addItem(pixmap_item)
 
         return scene
 
