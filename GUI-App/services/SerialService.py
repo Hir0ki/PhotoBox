@@ -29,19 +29,22 @@ class SerialThread(QThread):
     @Slot(tuple)
     def set_buttons_to_blink(self,button_tuple):
         
-        if button_tuple[0] == True and self.current_led_state[0] == False:
+        if button_tuple[0] == True:
             self.current_led_state[0] = True
         else:
             self.current_led_state[0] = False
-        if button_tuple[1]  == True and self.current_led_state[1] == False:
+
+        if button_tuple[1]  == True :
             self.current_led_state[1] = True
         else:
             self.current_led_state[1] = False
-        if button_tuple[2]  == True and self.current_led_state[2] == False:
+
+        if button_tuple[2]  == True:
             self.current_led_state[2] = True
         else:
             self.current_led_state[2] = False
-        if button_tuple[3]  == True and self.current_led_state[3] == False:
+
+        if button_tuple[3]  == True:
             self.current_led_state[3] = True
         else:
             self.current_led_state[3] = False

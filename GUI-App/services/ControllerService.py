@@ -81,18 +81,17 @@ class ControllerService():
 
         if self.current_view == self.VIEW_START:
             if button_number == 4:
-                self.draw_start_view()
-                self.session_service.start_new_session()
+                self.draw_preview_view()
         
         if self.current_view == self.VIEW_PREVIEW:
             if button_number == 4:
-                self.main_window.set_trigger(True)
+                self.main_window.cameraThread.set_trigger(True)
             if button_number == 3:
                 self.draw_qr_view()
         if self.current_view == self.VIEW_QR:
             if button_number == 4:
                 self.session_service.start_new_session()
-                self.draw_new_image()
+                self.draw_start_view()
             if button_number == 1:
                 self.draw_preview_view()
 

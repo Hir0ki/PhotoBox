@@ -12,7 +12,8 @@ class SessionService:
         shortuuid.set_alphabet("1234567890qwertzuiopasdfghjklyxcvbnm")
 
     def start_new_session(self):
-        tmp_uuid = shortuuid.ShortUUID().random(length=6)
+        tmp_uuid = shortuuid.ShortUUID().random(length=6).upper()
+
         while self._check_if_id_is_unique(tmp_uuid) == False:
             tmp_uuid = shortuuid.ShortUUID().random(length=6)
         else:
