@@ -10,6 +10,7 @@ class Ardunio:
         self.logger = logging.getLogger()
         self.connect()
         self.sio = io.TextIOWrapper(io.BufferedRWPair(self.connection, self.connection))
+        self.total_count = 0
 
     def connect(self):
         while True:
@@ -37,14 +38,13 @@ class Ardunio:
             self.logger.error("error while sending msg: {msg}", exc_info=ex)
 
     def wait_for_trigger(self):
-        self.logger.info("waiting for trigger")
+        
         # irgnore first
-        count = 0
-
-        while count != 21:
+        self.logger.info(f"waiting for trigger")
+        while self.total_count != 21:
             trigger = self.connection.read()
             if trigger != b"":
-                count += 1
+                self.total_count += 1
 
         while True:
             trigger = self.connection.read()

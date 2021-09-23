@@ -76,6 +76,10 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         if event.key() == Qt.Key_F2:
             logging.info("Set preview to False")
             self.set_preview_signal.emit(False)
+        if event.key() == Qt.Key_F3:
+            self.graphics_view_service.show_qr_code(config.get_base_url()+self.SessionService.session_uuid)
+            logging.info("Set generate qr code ")
+            
 
 
 

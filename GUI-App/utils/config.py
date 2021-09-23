@@ -38,6 +38,12 @@ class Config:
         except KeyError as ex:
             log.log_msg_with_error("couldn't load button_height", ex)
 
+    def get_base_url(self):
+        try:
+            return self._config_dict["base_url"]
+        except KeyError as ex:
+            log.log_msg_with_error("couldn't load base_url", ex)
+
     def setup_logger(self):
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)

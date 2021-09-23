@@ -51,10 +51,12 @@ class CameraThread(QThread):
     def set_trigger(self, state: bool):
         logging.info(f"Trigger state set to: {state}")
         self.trigger = state
+        return True
 
     @Slot(bool)
     def set_preview_is_aktive(self, state: bool):
         self.preview_is_aktive = state
+        return True
 
     def _convert_picture_to_qimage(self, img):
         height, width, channels = img.shape

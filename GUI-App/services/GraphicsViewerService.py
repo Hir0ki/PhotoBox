@@ -1,13 +1,15 @@
+import logging
 from PySide2.QtWidgets import (
     QApplication,
     QMainWindow,
     QGraphicsScene,
     QGraphicsPixmapItem,
     QGraphicsView,
+    QGraphicsTextItem
 )
-from PySide2.QtGui import QPixmap
-from PySide2.QtCore import Qt, Signal
-
+from PySide2.QtGui import QPixmap, QFont
+from PySide2.QtCore import Qt
+from services.QRCodeService import QRCodeService
 
 class GraphicsViewService:
     
@@ -24,6 +26,8 @@ class GraphicsViewService:
 
         self.pixmap = None
 
+        self.qr_service:QRCodeService = QRCodeService()
+
     def show_new_image(self, img):
         self.pixmap = QPixmap(img)
         self.pixmap = self.pixmap.scaled(self.gaphices_viewer.width(),self.gaphices_viewer.height(),Qt.KeepAspectRatioByExpanding)
@@ -35,4 +39,22 @@ class GraphicsViewService:
         pixmap_item = QGraphicsPixmapItem(self.pixmap)
         
         scene.addItem(pixmap_item)
+        self.gaphices_viewer.setScene(scene)
+
+    def show_qr_code(self, url):
+        pixmap_qr_code = QPixmap.fromImage(self.qr_service.generade_qr_code(url))
+        scene = QGraphicsScene()
+        
+        pixmap_item = QGraphicsPixmapItem(pixmap_qr_code)
+        half_window_width = self.photobooth_window.width()/2
+        pixmap_item.setX(-half_window_width)
+        pixmap_item.setY(-10.0)
+        logging.info(f"x: {pixmap_item.x()} y: {pixmap_item.y()}")
+
+        url_item = QGraphicsTextItem(f"Die Bilder können unter der Addresse: \n{url} \ngedownloaded werden")
+        url_item.setFont(QFont('Arial', 50))
+        url_item.setTextWidth(800)
+
+        scene.addItem(pixmap_item)
+        scene.addItem(url_item)
         self.gaphices_viewer.setScene(scene)

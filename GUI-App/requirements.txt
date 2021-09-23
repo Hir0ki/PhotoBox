@@ -4,3 +4,5 @@ gphoto2
 opencv-python-headless
 pyserial
 shortuuid
+qrcode
+pillow

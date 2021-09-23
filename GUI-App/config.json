@@ -1,7 +1,8 @@
 {
-    "output_path": "/tmp",
+    "output_path": "/home/photobox/Pictures/photobox",
     "debug": "False",
     "image_show_time_in_s" : 5,
     "serial_port": "/dev/ttyUSB0",
-    "button_height": 100
+    "button_height": 100,
+    "base_url": "https://google.com/"
 }

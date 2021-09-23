@@ -23,11 +23,14 @@ class SerialThread(QThread):
 
     def run(self):
         while self.run_thread == True:
+            logging.info("waiting for message")
             message = self.ardunio.wait_for_trigger()
             self.send_signal_for_message(message)
+            logging.info(f"done sending for message{self.run_thread}")
+
 
     def send_signal_for_message(self, message: bytes):
-
+        logging.info(f"Send signal for message: {message}")
         if message == b"t":
             self.sendtriggermessage.emit(True)
         if message == b"1":
@@ -38,3 +41,4 @@ class SerialThread(QThread):
             self.button3press.emit(True)
         if message == b"4":
             self.button4press.emit(True)
+        return False
