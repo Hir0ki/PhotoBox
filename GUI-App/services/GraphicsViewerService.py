@@ -54,5 +54,13 @@ class GraphicsViewService:
 
         return scene
     
+    def create_start_scene(self, scene, text):
+        text_item = QGraphicsTextItem(text)
+        text_item.setFont(QFont('Arial', 50))
+        
+        scene.addItem(text_item)
+
+        return scene
+
     def show_scene(self, scene):
         self.gaphices_viewer.setScene(scene)

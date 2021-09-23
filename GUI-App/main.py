@@ -43,7 +43,7 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.SerialThread.sendtriggermessage.connect(self.cameraThread.set_trigger)
         self.SerialThread.start()
 
-        
+        self.controller_service.draw_start_view()
 
         self.showFullScreen()
 
@@ -73,14 +73,14 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         if event.key() == Qt.Key_Escape:
             self.close()
         if event.key() == Qt.Key_F1:
-            logging.info("Set preview to True")
-            self.set_preview_signal.emit(True)
+            logging.info("show start view")
+            self.controller_service.draw_start_view()
         if event.key() == Qt.Key_F2:
-            logging.info("Set preview to False")
+            logging.info("Show preview view")
             self.controller_service.draw_preview_view()
         if event.key() == Qt.Key_F3:
             self.controller_service.draw_qr_view()
-            logging.info("Set generate qr code ")
+            logging.info("Show qr view")
             
 
 

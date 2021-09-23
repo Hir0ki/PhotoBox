@@ -45,3 +45,11 @@ class ControllerService:
     def draw_new_image(self, img):
         if self.current_view == "preview":
             self.grapics_view_service.show_new_image(img)
+    
+    def draw_start_view(self):
+        self.current_view = "start"
+
+        scene = QGraphicsScene()
+        self.grapics_view_service.create_start_scene(scene, "Wilkommen zur Photobox bitte den Start Button Drücken")
+
+        self.grapics_view_service.show_scene(scene)
