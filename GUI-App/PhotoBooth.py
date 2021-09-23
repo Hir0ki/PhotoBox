@@ -19,8 +19,7 @@ class Ui_PhotoBooth(object):
             PhotoBooth.setObjectName(u"PhotoBooth")
         PhotoBooth.resize(1170, 797)
         PhotoBooth.setAutoFillBackground(False)
-        PhotoBooth.setStyleSheet(u"background-color: #444242\n"
-"")
+        #PhotoBooth.setStyleSheet(u"background-color: #444242\n""")
         self.centralwidget = QWidget(PhotoBooth)
         self.centralwidget.setObjectName(u"centralwidget")
         self.graphicsView = QGraphicsView(self.centralwidget)

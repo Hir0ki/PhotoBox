@@ -4,5 +4,5 @@
     "image_show_time_in_s" : 5,
     "serial_port": "/dev/ttyUSB0",
     "button_height": 100,
-    "base_url": "https://google.com/"
+    "base_url": "https://fotobox.techbeard.de/pictures/"
 }

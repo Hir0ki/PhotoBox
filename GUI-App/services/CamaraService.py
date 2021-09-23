@@ -66,4 +66,5 @@ class CameraThread(QThread):
             width = 1920
         res = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         res = cv2.flip(res, 1)
+        #res = cv2.GaussianBlur(res,(15,15),cv2.BORDER_DEFAULT)
         return QImage(res, width, height, width * channels, QImage.Format_RGB888)
