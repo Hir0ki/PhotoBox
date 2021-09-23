@@ -1,14 +1,17 @@
 import logging
 import time
 import cv2
+
+from datetime import  datetime, timedelta
 from utils.config import Config
 from PySide2.QtCore import QThread, Signal, Signal, Slot
 from PySide2.QtGui import QImage
 from devices.camera import Camera
 
-
 class CameraThread(QThread):
     newImage: Signal = Signal(QImage)
+    send_to_arduino: Signal = Signal(bytes)
+    send_with_delay: Signal = Signal(int)
 
     def __init__(self):
         QThread.__init__(self)
@@ -32,18 +35,25 @@ class CameraThread(QThread):
         self.logger.info("starting preview")
 
         while self.run_thread:
-
-            if self.trigger == True:
-                img = self.camera.capture_image(self.session_dir)
-                cov_img = self._convert_picture_to_qimage(img)
-                self.newImage.emit(cov_img)
-                self.sleep(Config().get_image_show_time_in_s())
-                self.logger.info("Reset trigger porperty")
-                self.trigger = False
             if self.preview_is_aktive == True:
                 img = self.camera.capture_next_preview_as_np_array()
                 self.newImage.emit(self._convert_picture_to_qimage(img))
+                if self.trigger == True:
+                    trigger_time = datetime.now()
+                    release_time = trigger_time + timedelta(0,5.15)
+                    self.send_to_arduino.emit(b't')
+                    while trigger_time <= release_time:
+                        trigger_time = datetime.now()
+                        img = self.camera.capture_next_preview_as_np_array()
+                        self.newImage.emit(self._convert_picture_to_qimage(img))
 
+                    
+                    img = self.camera.capture_image(self.session_dir)
+                    cov_img = self._convert_picture_to_qimage(img)
+                    self.newImage.emit(cov_img)
+                    self.sleep(Config().get_image_show_time_in_s())
+                    self.logger.info("Reset trigger porperty")
+                    self.trigger = False
         time.sleep(1)
         self.logger.info("deleting camera")
 

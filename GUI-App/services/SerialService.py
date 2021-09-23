@@ -1,3 +1,4 @@
+from datetime import datetime
 from PySide2.QtCore import QThread, Signal, Slot
 from devices.ardunio import Ardunio
 import logging
@@ -7,11 +8,12 @@ class SerialThread(QThread):
     sendtriggermessage = Signal(bytes)
     button_press = Signal(int)
 
-    def __init__(self, port):
+    def __init__(self, port, controller_service):
         QThread.__init__(self)
         logging.info("Starting trigger thread")
         self.run_thread = True
         self.ardunio = Ardunio(port)
+        self.controller_service = controller_service
         self.current_led_state = [False,False,False,False]
 
     def __del__(self):
@@ -25,6 +27,14 @@ class SerialThread(QThread):
             message = self.ardunio.wait_for_trigger()
             self._send_signal_for_message(message)
             logging.info(f"done sending for message{self.run_thread}")
+
+    @Slot(bytes)
+    def send_signal_to_arduino(self,msg):
+        self.ardunio.send(msg)
+    @Slot(bytes)
+    def send_flash_with_delay(self,delay):
+        self.wait(delay)
+        self.ardunio.send(b'f')        
 
     @Slot(tuple)
     def set_buttons_to_blink(self,button_tuple):
@@ -63,7 +73,7 @@ class SerialThread(QThread):
 
     def _send_signal_for_message(self, message: bytes):
         logging.info(f"Send signal for message: {message}")
-        if message == b"t":
+        if message == b"t" and self.controller_service.current_view == "preview":
             self.sendtriggermessage.emit(True)
         if message == b"1":
             self.button_press.emit(1)

@@ -38,13 +38,17 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.cameraThread.session_dir = self.SessionService.session_path
         self.cameraThread.newImage.connect(self.controller_service.draw_new_image)
         self.set_preview_signal.connect(self.cameraThread.set_preview_is_aktive)
+        
         self.cameraThread.start()
         
 
-        self.SerialThread = SerialService.SerialThread(config.get_serial_port())
+        self.SerialThread = SerialService.SerialThread(config.get_serial_port(), self.controller_service)
         self.SerialThread.sendtriggermessage.connect(self.cameraThread.set_trigger)
         self.SerialThread.button_press.connect(self.handle_button_press)
+
         self.button_led.connect(self.SerialThread.set_buttons_to_blink)
+        self.cameraThread.send_to_arduino.connect(self.SerialThread.send_signal_to_arduino)
+        self.cameraThread.send_with_delay.connect(self.SerialThread.send_flash_with_delay)
         self.SerialThread.start()
         self.controller_service.draw_start_view()
 
