@@ -65,4 +65,5 @@ class CameraThread(QThread):
             height = 1080
             width = 1920
         res = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        res = cv2.flip(res, 1)
         return QImage(res, width, height, width * channels, QImage.Format_RGB888)

@@ -29,10 +29,12 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         
         self.SessionService = SessionService.SessionService()
         self.SessionService.start_new_session()
+
+        self.controller_service = ControllerService.ControllerService(self, self.graphics_view_service, self.SessionService)
         
         self.cameraThread = CamaraService.CameraThread()
         self.cameraThread.session_dir = self.SessionService.session_path
-        self.cameraThread.newImage.connect(self.graphics_view_service.show_new_image)
+        self.cameraThread.newImage.connect(self.controller_service.draw_new_image)
         self.set_preview_signal.connect(self.cameraThread.set_preview_is_aktive)
         self.cameraThread.start()
         
@@ -41,7 +43,7 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.SerialThread.sendtriggermessage.connect(self.cameraThread.set_trigger)
         self.SerialThread.start()
 
-        self.controller_service = ControllerService.ControllerService(self)
+        
 
         self.showFullScreen()
 
@@ -75,9 +77,9 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
             self.set_preview_signal.emit(True)
         if event.key() == Qt.Key_F2:
             logging.info("Set preview to False")
-            self.set_preview_signal.emit(False)
+            self.controller_service.draw_preview_view()
         if event.key() == Qt.Key_F3:
-            self.graphics_view_service.show_qr_code(config.get_base_url()+self.SessionService.session_uuid)
+            self.controller_service.draw_qr_view()
             logging.info("Set generate qr code ")
             
 
