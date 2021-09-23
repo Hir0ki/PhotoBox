@@ -1,19 +1,21 @@
+import logging
 from re import S
-from PySide2.QtCore import Signal
+from PySide2.QtCore import Signal, QObject
 from PySide2.QtWidgets import QMainWindow, QGraphicsScene, QPushButton
 from utils.config import Config
 from PySide2.QtGui import QPixmap, QFont
 from services import GraphicsViewerService, SessionService, QRCodeService
 
-class ControllerService:
-
+class ControllerService():
+    
+    
     # different states: start preview qr_code
     VIEW_START = "start"
     VIEW_PREVIEW = "preview"
     VIEW_QR = "qr_code"
 
     def __init__(
-        self, MainWindow:QMainWindow, GraphicsViewService: GraphicsViewerService.GraphicsViewService, SessionService: SessionService.SessionService
+        self, MainWindow:QMainWindow, GraphicsViewService: GraphicsViewerService.GraphicsViewService, SessionService: SessionService.SessionService, 
     ) -> None:
         self.main_window = MainWindow
         self.grapics_view_service = GraphicsViewService
@@ -42,7 +44,7 @@ class ControllerService:
         self._clear_all_buttons()
         self._rename_button(self.main_window.pushButton_4,"Neue Session")
         self._rename_button(self.main_window.pushButton,"Zurück \n zur Session")
-        
+        self.main_window.button_led.emit((True,False,False,True))
 
         pixmap_qr_code = QPixmap.fromImage(self.qr_code_serivce.generade_qr_code(url))
         self.grapics_view_service.create_qr_scene(scene,pixmap_qr_code,text)
@@ -56,6 +58,7 @@ class ControllerService:
         self._clear_all_buttons()
         self._rename_button(self.main_window.pushButton_4,"Foto")
         self._rename_button(self.main_window.pushButton_3,"Session \n Beenden")
+        self.main_window.button_led.emit((False,False,True,True))
         
     def draw_new_image(self, img):
         if self.current_view == "preview":
@@ -66,12 +69,33 @@ class ControllerService:
 
         self._clear_all_buttons()
         self._rename_button(self.main_window.pushButton_4, "Start")
+        self.main_window.button_led.emit((False,False,False,True))
 
         scene = QGraphicsScene()
         self.grapics_view_service.create_start_scene(scene, "Wilkommen zur Photobox bitte den Start Button Drücken")
 
         self.grapics_view_service.show_scene(scene)
     
+    def handle_button_press(self,button_number):
+        logging.info(f"Button was pressed: {button_number}")
+
+        if self.current_view == self.VIEW_START:
+            if button_number == 4:
+                self.draw_start_view()
+                self.session_service.start_new_session()
+        
+        if self.current_view == self.VIEW_PREVIEW:
+            if button_number == 4:
+                self.main_window.set_trigger(True)
+            if button_number == 3:
+                self.draw_qr_view()
+        if self.current_view == self.VIEW_QR:
+            if button_number == 4:
+                self.session_service.start_new_session()
+                self.draw_new_image()
+            if button_number == 1:
+                self.draw_preview_view()
+
     def _deactivate_button(self, button: QPushButton):
         button.setText("")
     

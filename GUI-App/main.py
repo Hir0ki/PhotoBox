@@ -10,7 +10,7 @@ from services import CamaraService, SerialService, SessionService, GraphicsViewe
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QGraphicsScene, QGraphicsPixmapItem
 from PySide2.QtGui import QPixmap
-from PySide2.QtCore import Qt, Signal
+from PySide2.QtCore import Qt, Signal, Slot
 
 config = Config()
 
@@ -18,6 +18,7 @@ config = Config()
 class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
     
     set_preview_signal: Signal = Signal(bool)
+    button_led = Signal(tuple)
     
     def __init__(self):
         super(self.__class__, self).__init__()
@@ -32,6 +33,7 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
 
         self.controller_service = ControllerService.ControllerService(self, self.graphics_view_service, self.SessionService)
         
+        
         self.cameraThread = CamaraService.CameraThread()
         self.cameraThread.session_dir = self.SessionService.session_path
         self.cameraThread.newImage.connect(self.controller_service.draw_new_image)
@@ -41,8 +43,9 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
 
         self.SerialThread = SerialService.SerialThread(config.get_serial_port())
         self.SerialThread.sendtriggermessage.connect(self.cameraThread.set_trigger)
+        self.SerialThread.button_press.connect(self.handle_button_press)
+        self.button_led.connect(self.SerialThread.set_buttons_to_blink)
         self.SerialThread.start()
-
         self.controller_service.draw_start_view()
 
         self.showFullScreen()
@@ -59,7 +62,10 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         # handel button resize
         self.controller_service.scale_buttons()
         QWidget.resizeEvent(self, event)
-
+    
+    @Slot(int)
+    def handle_button_press(self,button_number):
+        self.controller_service.handle_button_press(button_number)
 
     def closeEvent(self, event):
         self.cameraThread.__del__()

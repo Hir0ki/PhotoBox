@@ -33,6 +33,7 @@ class Ardunio:
 
     def send(self, msg):
         try:
+            self.logger.info(f"sending serial message: {msg}")
             self.connection.write(msg)
         except serial.SerialException as ex:
             self.logger.error("error while sending msg: {msg}", exc_info=ex)
@@ -40,11 +41,11 @@ class Ardunio:
     def wait_for_trigger(self):
         
         # irgnore first
-        self.logger.info(f"waiting for trigger")
-        while self.total_count != 21:
-            trigger = self.connection.read()
-            if trigger != b"":
-                self.total_count += 1
+        #self.logger.info(f"waiting for trigger")
+        #while self.total_count != 21:
+        #    trigger = self.connection.read()
+        #    if trigger != b"":
+        #        self.total_count += 1
 
         while True:
             trigger = self.connection.read()
