@@ -5,13 +5,13 @@ The serial protocol is currently really simple and consists of a single char per
 The Arduino Pro Micro has USB CDC Serial, so the baud rate doesn't matter.
 
 ### From Controller
-| Serial Command | Function                                 |
-| -------------- | ---------------------------------------- |
-| t              | Trigger signal after countdown animation |
-| 1              | Menu button 1 was pressed                |
-| 2              | Menu button 2 was pressed                |
-| 3              | Menu button 3 was pressed                |
-| 4              | Menu button 4 was pressed                |
+| Serial Command | Function                   |
+| -------------- | -------------------------- |
+| t              | Trigger button was pressed |
+| 1              | Menu button 1 was pressed  |
+| 2              | Menu button 2 was pressed  |
+| 3              | Menu button 3 was pressed  |
+| 4              | Menu button 4 was pressed  |
 
 ### To Controller
 | Serial Command | Function                                                                |

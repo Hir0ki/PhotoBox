@@ -12,6 +12,7 @@
 // trigger button
 #define BUTTON_PIN      2
 #define DEBOUNCE        200
+#define FILTER_DELAY    5       // ms, after which the trigger button counts as pressed
 #define INTERRUPT_MODE  RISING
 
 // menu buttons
@@ -198,13 +199,12 @@ void fillPalette(CRGBPalette16 palette, uint8_t index, uint8_t brightness, uint1
 }
 
 volatile unsigned long lastButtonPress = 0;
-bool startCircleAnimation = false, startFlash = false;
+bool startCircleAnimation = false, startFlash = false, triggerButtonPressed = false;
 
 void buttonIsr() {
     if(millis() - lastButtonPress > DEBOUNCE && !startCircleAnimation && !startFlash) {
         lastButtonPress = millis();
-        startCircleAnimation = true;
-        startFlash = true;
+        triggerButtonPressed = true;
     }
 }
 
@@ -256,10 +256,22 @@ unsigned long lastAnimStep = 0;
 uint16_t animStep = 0;
 
 void loop() {  
-    if(startCircleAnimation) {
-            rainbowCircle(6000);
-            startCircleAnimation = false;
+    if (triggerButtonPressed) {
+        if (millis() - lastButtonPress > FILTER_DELAY) {
+            // check if button is still pressed after filter delay to reject spurious interrupts due to noise
+            if (digitalRead(BUTTON_PIN) == (INTERRUPT_MODE == RISING ? HIGH : LOW)) {
+                // startCircleAnimation = true;
+                // startFlash = true;
+                Serial.print('t');
+            }
+            triggerButtonPressed = false;
         }
+    }
+
+    if(startCircleAnimation) {
+        rainbowCircle(6000);
+        startCircleAnimation = false;
+    }
     if(startFlash && circleTime == 0 && !startCircleAnimation) {
         startFlash = false;
         Serial.print('t');
