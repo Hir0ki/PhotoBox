@@ -1,11 +1,13 @@
 import logging
 from re import S
-from PySide2.QtCore import Signal, QObject
+from PySide2.QtCore import QSize, QByteArray
 from PySide2.QtWidgets import QMainWindow, QGraphicsScene, QPushButton
+from PySide2.QtSvg import QSvgRenderer
 from utils.config import Config
-from PySide2.QtGui import QPixmap, QFont
+from PySide2.QtGui import QPixmap, QFont, QIcon 
 from services import GraphicsViewerService, SessionService, QRCodeService
 from PIL import Image, ImageQt
+from pathlib import Path
 
 class ControllerService():
     
@@ -41,8 +43,8 @@ class ControllerService():
         scene = QGraphicsScene()
         url = self.config.get_base_url() + self.session_service.session_uuid
         self._clear_all_buttons()
-        self._rename_button(self.main_window.pushButton_4,"New Session")
-        self._rename_button(self.main_window.pushButton,"Contiune Session")
+        self._rename_button(self.main_window.pushButton_4,"New Session","")
+        self._rename_button(self.main_window.pushButton,"Contiune Session","")
         self.main_window.button_led.emit((True,False,False,True))
 
         im = Image.open(self.config.get_qr_code_png_path())
@@ -59,8 +61,8 @@ class ControllerService():
         self.main_window.set_preview_signal.emit(True)
         
         self._clear_all_buttons()
-        self._rename_button(self.main_window.pushButton_4,"Take Picture")
-        self._rename_button(self.main_window.pushButton_3,"Finalise Session")
+        self._rename_button(self.main_window.pushButton_4,"Take Picture","")
+        self._rename_button(self.main_window.pushButton_3,"Finalise Session", "dfdsa")
         self.main_window.button_led.emit((False,False,True,True))
         
     def draw_new_image(self, img):
@@ -71,7 +73,7 @@ class ControllerService():
         self.current_view = "start"
 
         self._clear_all_buttons()
-        self._rename_button(self.main_window.pushButton_4, "Start")
+        self._rename_button(self.main_window.pushButton_4, "Start","")
         self.main_window.button_led.emit((False,False,False,True))
 
         scene = QGraphicsScene()
@@ -112,7 +114,8 @@ class ControllerService():
         self._deactivate_button(self.main_window.pushButton_3)
         self._deactivate_button(self.main_window.pushButton_4)
 
-    def _rename_button(self, button: QPushButton, text):
+    def _rename_button(self, button: QPushButton, text, icon_pixmap):
+
         button.setText(text)
         button.setFont(QFont('Arial', 25))
-        
+    

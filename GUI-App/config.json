@@ -7,5 +7,5 @@
     "base_url": "ftbx.fun/pictures/",
     "start_page_png_path" : "./assets/photobox-main.png",
     "qr_code_png_path" : "./assets/photobox-link.png",
-    "exit_svg": "./assets/exit.svg"
+    "asset_path": "./assets"
 }

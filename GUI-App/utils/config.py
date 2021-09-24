@@ -55,6 +55,12 @@ class Config:
         except KeyError as ex:
             log.log_msg_with_error("couldn't load qr_code_png_path", ex)
 
+    def get_asset_path(self):
+        try:
+            return self._config_dict["asset_path"]
+        except KeyError as ex:
+            log.log_msg_with_error("couldn't load asset_path", ex)
+
     def setup_logger(self):
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)
