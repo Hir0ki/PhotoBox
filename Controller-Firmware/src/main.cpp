@@ -15,8 +15,14 @@
 #define FILTER_DELAY    5       // ms, after which the trigger button counts as pressed
 #define INTERRUPT_MODE  RISING
 
+// flash input
+#define FLASH_PIN       3
+#define FLASH_DEBOUNCE  200
+#define FLASH_FILTER    2
+#define FLASH_INT_MODE  FALLING
+
 // menu buttons
-const uint8_t buttonPins[] =    { 3,  4,  7,  8 };
+const uint8_t buttonPins[] =    { 14,  4,  7,  8 };
 const uint8_t buttonLedPins[] = { 5,  6,  9, 10 };
 const uint8_t buttonPressedLevel = HIGH;
 #define DATA_PIN    16 //11
@@ -198,13 +204,20 @@ void fillPalette(CRGBPalette16 palette, uint8_t index, uint8_t brightness, uint1
     }
 }
 
-volatile unsigned long lastButtonPress = 0;
-bool startCircleAnimation = false, startFlash = false, triggerButtonPressed = false;
+volatile unsigned long lastButtonPress = 0, lastFlashSignal = 0;
+bool startCircleAnimation = false, startFlash = false, triggerButtonPressed = false, flashTriggered = false;
 
 void buttonIsr() {
     if(millis() - lastButtonPress > DEBOUNCE && !startCircleAnimation && !startFlash) {
         lastButtonPress = millis();
         triggerButtonPressed = true;
+    }
+}
+
+void flashIsr() {
+    if(millis() - lastFlashSignal > FLASH_DEBOUNCE) {
+        lastFlashSignal = millis();
+        flashTriggered = true;
     }
 }
 
@@ -236,6 +249,10 @@ void setup() {
 
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonIsr, INTERRUPT_MODE);
+    
+    pinMode(FLASH_PIN, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(FLASH_PIN), flashIsr, FLASH_INT_MODE);
+
 
     for (int i = 0; i < buttonNum; i++) {
         pinMode(buttonPins[i], INPUT_PULLUP);
@@ -265,6 +282,20 @@ void loop() {
                 Serial.print('t');
             }
             triggerButtonPressed = false;
+        }
+    }
+
+    if (flashTriggered) {
+        if (millis() - lastFlashSignal > FLASH_FILTER) {
+            if (digitalRead(FLASH_PIN) == (FLASH_INT_MODE == RISING ? HIGH : LOW)) {
+                flash();
+                Serial.print('f');
+                idleAnimation = true;
+            }
+            else {
+                Serial.print('!');
+            }
+            flashTriggered = false;
         }
     }
 

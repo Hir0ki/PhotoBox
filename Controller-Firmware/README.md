@@ -8,6 +8,7 @@ The Arduino Pro Micro has USB CDC Serial, so the baud rate doesn't matter.
 | Serial Command | Function                   |
 | -------------- | -------------------------- |
 | t              | Trigger button was pressed |
+| f              | Flash was triggered        |
 | 1              | Menu button 1 was pressed  |
 | 2              | Menu button 2 was pressed  |
 | 3              | Menu button 3 was pressed  |
