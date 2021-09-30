@@ -292,9 +292,6 @@ void loop() {
                 Serial.print('f');
                 idleAnimation = true;
             }
-            else {
-                Serial.print('!');
-            }
             flashTriggered = false;
         }
     }
