@@ -1,0 +1,12 @@
+[Unit]
+Description=Serivce for photobox
+After=graphical.target
+
+[Service]
+ExecStartPre=/bin/sleep 20
+WorkingDirectory=/home/photobox/PhotoBox/GUI-App 
+ExecStart=bash start.sh
+User=photobox 
+
+[Install]
+WantedBy=multi-user.target

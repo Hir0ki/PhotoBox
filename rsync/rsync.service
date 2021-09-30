@@ -1,0 +1,10 @@
+[Unit]
+Description=Start start rsync for photobox
+After=network-online.target
+[Service]
+ExecStart=bash /usr/bin/rsync.sh
+User=photobox
+Group=photobox
+
+[Install]
+WantedBy=multi-user.target

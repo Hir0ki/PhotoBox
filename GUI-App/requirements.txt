@@ -1,6 +1,8 @@
 wheel
 pyside2
 gphoto2
-numpy
-opencv-python
+opencv-python-headless
 pyserial
+shortuuid
+qrcode
+pillow
