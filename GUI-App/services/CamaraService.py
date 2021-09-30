@@ -12,17 +12,23 @@ class CameraThread(QThread):
     newImage: Signal = Signal(QImage)
     send_to_arduino: Signal = Signal(bytes)
     send_with_delay: Signal = Signal(int)
-
-    def __init__(self):
+    
+    def __init__(self, session_service):
         QThread.__init__(self)
         self.logger = logging.getLogger()
         self.logger.info("Starting camera tread")
         self.run_thread = True
         self.trigger = False
         self.session_dir = None
+        self.session_service = session_service
         self.preview_is_aktive = True
         self.camera = Camera()
         self.logger.info("init of camara thread done ")
+
+    @Slot(str)
+    def set_session_dir(self, session_dir):
+        self.session_dir = session_dir
+
 
     def __del__(self):
         self.logger.info("Closing camera thread")
@@ -47,7 +53,7 @@ class CameraThread(QThread):
                         img = self.camera.capture_next_preview_as_np_array()
                         self.newImage.emit(self._convert_picture_to_qimage(img))
 
-                    
+                    self.logger.info(f"Saving iamge to dir {self.session_dir}")                    
                     img = self.camera.capture_image(self.session_dir)
                     cov_img = self._convert_picture_to_qimage(img)
                     self.newImage.emit(cov_img)

@@ -71,6 +71,7 @@ class ControllerService():
     
     def draw_start_view(self):
         self.current_view = "start"
+        self.session_service.start_new_session()
 
         self._clear_all_buttons()
         self._rename_button(self.main_window.pushButton_4, "Start","")

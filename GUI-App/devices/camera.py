@@ -28,7 +28,7 @@ class Camera:
         while True:
             try:
                 context = gp.Context()
-                self.camera = gp.Camera()
+                self.camera: gp.gphoto2.camera = gp.Camera()
                 self.camera.init(context)
             except gp.GPhoto2Error as ex:
                 if ex == gp.GP_ERROR_MODEL_NOT_FOUND:

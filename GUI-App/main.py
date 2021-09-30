@@ -19,6 +19,7 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
     
     set_preview_signal: Signal = Signal(bool)
     button_led = Signal(tuple)
+    new_session_signal = Signal(str)
     
     def __init__(self):
         super(self.__class__, self).__init__()
@@ -28,13 +29,14 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
 
         self.graphics_view_service = GraphicsViewerService.GraphicsViewService(self.graphicsView, self)
         
-        self.SessionService = SessionService.SessionService()
+        self.SessionService = SessionService.SessionService(self)
         self.SessionService.start_new_session()
 
         self.controller_service = ControllerService.ControllerService(self, self.graphics_view_service, self.SessionService)
         
         
-        self.cameraThread = CamaraService.CameraThread()
+        self.cameraThread = CamaraService.CameraThread(self.SessionService)
+        self.new_session_signal.connect(self.cameraThread.set_session_dir)
         self.cameraThread.session_dir = self.SessionService.session_path
         self.cameraThread.newImage.connect(self.controller_service.draw_new_image)
         self.set_preview_signal.connect(self.cameraThread.set_preview_is_aktive)
@@ -67,6 +69,10 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         self.controller_service.scale_buttons()
         QWidget.resizeEvent(self, event)
     
+
+    def new_session(self, session_path):
+        self.new_session_signal.emit(session_path)
+
     @Slot(int)
     def handle_button_press(self,button_number):
         self.controller_service.handle_button_press(button_number)
