@@ -2,9 +2,10 @@
     "output_path": "/home/photobox/Pictures/photobox",
     "debug": "False",
     "image_show_time_in_s" : 5,
+    "count_down_time_in_s": 5.15,
     "serial_port": "/dev/ttyACM0",
     "button_height": 100,
-    "base_url": "ftbx.fun/pictures/",
+    "base_url": "ftbx.fun/",
     "start_page_png_path" : "./assets/photobox-main.png",
     "qr_code_png_path" : "./assets/photobox-link.png",
     "asset_path": "./assets"

@@ -61,6 +61,12 @@ class Config:
         except KeyError as ex:
             log.log_msg_with_error("couldn't load asset_path", ex)
 
+    def get_count_down_time_in_s(self):
+        try:
+            return self._config_dict["count_down_time_in_s"]
+        except KeyError as ex:
+            log.log_msg_with_error("couldn't load count_down_time_in_s", ex)
+
     def setup_logger(self):
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)

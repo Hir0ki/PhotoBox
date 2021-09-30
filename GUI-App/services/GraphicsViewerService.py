@@ -53,7 +53,7 @@ class GraphicsViewService:
         url_item.setFont(QFont('Arial', 50))
         url_item.setTextWidth(820)
         url_item.setY(450)
-        url_item.setX(1000)
+        url_item.setX(1150)
         url_item.setZValue(1)
        
         pixmap_item.setZValue(1)

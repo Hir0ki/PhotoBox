@@ -43,7 +43,6 @@ class PhotoBooth(QMainWindow, pb.Ui_PhotoBooth):
         
         self.cameraThread.start()
         
-
         self.SerialThread = SerialService.SerialThread(config.get_serial_port(), self.controller_service)
         self.SerialThread.sendtriggermessage.connect(self.cameraThread.set_trigger)
         self.SerialThread.button_press.connect(self.handle_button_press)
