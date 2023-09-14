@@ -1,4 +1,5 @@
 import logging
+import cups
 from re import S
 from PySide2.QtCore import QSize, QByteArray
 from PySide2.QtWidgets import QMainWindow, QGraphicsScene, QPushButton
@@ -8,6 +9,7 @@ from PySide2.QtGui import QPixmap, QFont, QIcon
 from services import GraphicsViewerService, SessionService, QRCodeService
 from PIL import Image, ImageQt
 from pathlib import Path
+
 
 class ControllerService():
     
@@ -23,10 +25,13 @@ class ControllerService():
         self.main_window = MainWindow
         self.grapics_view_service = GraphicsViewService
         self.session_service = SessionService
-        self. qr_code_serivce = QRCodeService.QRCodeService()
+        self.qr_code_serivce = QRCodeService.QRCodeService()
         self.config = Config()
         self.current_view = self.VIEW_START
-
+        self.conn = cups.Connection()
+        self.printers = self.conn.getPrinters()
+        self.printer_name = list(self.printers.keys())[0]
+        logging.info(f"Cups gives following printer {self.printer_name}")
 
     def scale_buttons(self):
         y = int(self.main_window.height() - self.config.get_button_height())
@@ -43,8 +48,8 @@ class ControllerService():
         scene = QGraphicsScene()
         url = self.config.get_base_url() + self.session_service.session_uuid
         self._clear_all_buttons()
-        self._rename_button(self.main_window.pushButton_4,"New Session","")
-        self._rename_button(self.main_window.pushButton,"Contiune Session","")
+        self._rename_button(self.main_window.pushButton_4,"Neue Fotoaufnahmen","")
+        self._rename_button(self.main_window.pushButton,"Fortsetzten","")
         self.main_window.button_led.emit((True,False,False,True))
 
         im = Image.open(self.config.get_qr_code_png_path())
@@ -59,11 +64,12 @@ class ControllerService():
     def draw_preview_view(self):
         self.current_view = "preview"
         self.main_window.set_preview_signal.emit(True)
-        
         self._clear_all_buttons()
-        self._rename_button(self.main_window.pushButton_4,"Take Picture","")
-        self._rename_button(self.main_window.pushButton_3,"Finalise Session", "dfdsa")
-        self.main_window.button_led.emit((False,False,True,True))
+        self._rename_button(self.main_window.pushButton_4,"Mach ein Foto","")
+        self._rename_button(self.main_window.pushButton_2,"Drucken", "")
+        self.main_window.button_led.emit((False,True,False,True))
+        
+
         
     def draw_new_image(self, img):
         if self.current_view == "preview":
@@ -99,6 +105,8 @@ class ControllerService():
                 self.main_window.cameraThread.set_trigger(True)
             if button_number == 3:
                 self.draw_qr_view()
+            if button_number == 2:
+                self.conn.printFile(self.printer_name,'/home/photobox/last.jpg',"pic",{}) 
         if self.current_view == self.VIEW_QR:
             if button_number == 4:
                 self.session_service.start_new_session()

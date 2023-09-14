@@ -63,7 +63,7 @@ class CameraThread(QThread):
                             trigger_time = datetime.now()
                             img = camera.capture_next_preview_as_np_array()
                             self.newImage.emit(self._convert_picture_to_qimage(img))
-
+                        self.send_to_arduino.emit(b'f')
                         self.logger.info(f"Saving iamge to dir {self.session_dir}")                    
                         img = camera.capture_image(self.session_dir)
                         cov_img = self._convert_picture_to_qimage(img)

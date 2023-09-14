@@ -4,6 +4,7 @@ import io
 import logging
 import numpy as np
 import cv2
+import shutil
 
 
 class Camera:
@@ -132,6 +133,7 @@ class Camera:
             )
             target = f"{target_path}/{camera_file_path.name}"
             camera_file.save(target)
+            shutil.copyfile(target, '/home/photobox/last.jpg')
             logging.info("Saved image to disk")
             return target
         except Exception as ex:
