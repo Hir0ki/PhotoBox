@@ -6,4 +6,4 @@ cp  ./rsync/rsync.service /lib/systemd/system/
 
 cp  ./rsync/rsync.sh /usr/bin/
 
-cp ./GUI-App/photobox.service /lib/systemd/system/
+cp ./GUI-App/photobox.service ~/.config/systemd/user/

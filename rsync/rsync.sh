@@ -6,7 +6,7 @@ IFS=$'\n\t'
 while true;
 do
     echo "starting rsync";
-    rsync --archive --compress --partial /home/photobox/Pictures/photobox/ root@cloud.techbeard.de:/root/docker/fotobox/data;
+    rsync --archive --compress --partial /home/photobox/Pictures/photobox/ root@ftbx.fun:/root/docker/fotobox/data;
     sleep 5;
 
 done;

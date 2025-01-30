@@ -1,12 +1,13 @@
+# This is a user service, copy to ~/.config/systemd/user/
+# and control it with `systemctl --user`
 [Unit]
 Description=Serivce for photobox
-After=graphical.target
+After=graphical-session.target
 
 [Service]
-ExecStartPre=/bin/sleep 20
+ExecStartPre=/bin/sleep 5
 WorkingDirectory=/home/photobox/PhotoBox/GUI-App 
 ExecStart=bash start.sh
-User=photobox 
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
